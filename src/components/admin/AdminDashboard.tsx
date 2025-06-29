@@ -3,6 +3,7 @@ import { Building2, MapPin, Settings, BarChart3, Database, Menu, X } from 'lucid
 import { AdminStationManagement } from './stations'
 import { AdminAddressManagement } from './addresses'
 import AddressImporter from './AddressImporter'
+import Logo from '@/components/ui/Logo'
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('stations')
@@ -112,13 +113,16 @@ const AdminDashboard: React.FC = () => {
                 <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               )}
             </button>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-                Admin Dashboard
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {tabs.find(tab => tab.id === activeTab)?.label}
-              </p>
+            <div className="flex items-center gap-3">
+              <Logo size="sm" showText={false} animated={false} />
+              <div>
+                <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Admin Dashboard
+                </h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {tabs.find(tab => tab.id === activeTab)?.label}
+                </p>
+              </div>
             </div>
           </div>
         </div>

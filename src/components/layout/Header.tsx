@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Sun, Moon, LogIn, LogOut, Settings, ArrowLeft } from 'lucide-react';
+import { Sun, Moon, LogIn, LogOut, Settings, ArrowLeft } from 'lucide-react';
 import { useAppStore } from '@/lib/store/app-store';
 import { useAuthStore } from '@/lib/store/auth-store';
+import Logo from '@/components/ui/Logo';
 
 interface HeaderProps {
   onAdminLogin: () => void;
@@ -42,20 +43,7 @@ const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdm
               onBackToWizard();
             }}
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl blur-lg opacity-30"></div>
-              <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-3 rounded-2xl shadow-xl">
-                <Shield className="h-8 w-8 text-white" />
-              </div>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                RevierKompass
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                Polizei Baden-Württemberg
-              </p>
-            </div>
+            <Logo size="md" animated={true} />
           </motion.div>
 
           {/* Navigation & Controls */}
