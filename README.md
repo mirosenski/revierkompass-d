@@ -1,4 +1,4 @@
-# RevierKompass v6
+# RevierKompass
 
 Eine moderne Web-Anwendung zur Verwaltung und Navigation von Polizeistationen in Baden-Württemberg.
 
@@ -24,43 +24,74 @@ npm run dev
 ## 📁 Projektstruktur
 
 ```
-revierkompass-v6/
+revierkompass-d/
+├── api/                     # Vercel API Routes
+│   ├── stationen.ts         # Stationen API
+│   ├── stationen-id.ts      # Einzelne Station API
+│   └── health.ts            # Health Check API
 ├── backend/
-│   ├── server.js              # JSON-Server für Stationen
-│   │   └── data/
-│   │       └── polizeistationen.json  # Stationen-Daten
-│   └── package.json
+│   ├── server.js            # Express-Server
+│   ├── simple-server.js     # Erweiterter Server
+│   ├── src/
+│   │   └── routes/          # API-Routen
+│   └── prisma/              # Datenbank-Schema
+├── prisma/
+│   ├── schema.prisma        # Prisma Schema
+│   └── dev.db              # SQLite Datenbank
 ├── src/
-│   ├── components/
-│   │   ├── wizard/            # Wizard-Komponenten
-│   │   │   └── Step2/         # Modulare Step2-Komponente
-│   │   └── admin/             # Admin-Komponenten
-│   ├── services/
-│   │   └── api/               # API-Services
-│   └── store/                 # Zustand-Management
-├── start-dev.sh               # Automatisches Start-Skript
+│   ├── components/          # React-Komponenten
+│   ├── pages/              # Seiten-Komponenten
+│   ├── services/           # API-Services
+│   ├── store/              # Zustand-Management
+│   ├── types/              # TypeScript Typen
+│   └── lib/                # Utility-Funktionen
+├── shared/                 # Geteilte Komponenten
+├── start-dev.sh            # Automatisches Start-Skript
+├── vercel.json             # Vercel-Konfiguration
 └── package.json
 ```
 
 ## 🔧 Technologien
 
 - **Frontend**: React 18, TypeScript, Vite
-- **Backend**: Node.js, Express
-- **Daten**: JSON-Server mit lokaler Datei
-- **Styling**: Tailwind CSS, Radix UI
+- **Backend**: Node.js, Express, Prisma ORM
+- **Datenbank**: SQLite (Entwicklung), PostgreSQL (Produktion)
+- **Styling**: Tailwind CSS, Radix UI, shadcn/ui
 - **State Management**: Zustand
 - **Routing**: React Router
+- **Deployment**: Vercel
+- **Maps**: MapLibre GL
+- **Forms**: React Hook Form + Zod
+- **API**: TanStack Query (React Query)
 
 ## 📊 Features
 
-- ✅ Modulare Step2-Komponente
-- ✅ JSON-Server für Stationen
-- ✅ Automatischer Start
+- ✅ Moderne React 18 Architektur
+- ✅ TypeScript für Typsicherheit
+- ✅ Prisma ORM für Datenbankzugriff
+- ✅ Vercel API Routes
+- ✅ MapLibre GL für Kartendarstellung
 - ✅ Admin-Bereich für Stationenverwaltung
-- ✅ Custom-Adressen
-- ✅ Responsive Design
+- ✅ Custom-Adressen mit Review-System
+- ✅ Responsive Design mit Tailwind CSS
+- ✅ Formulare mit React Hook Form
+- ✅ Toast-Benachrichtigungen
+- ✅ PDF-Export-Funktionalität
+- ✅ Excel-Import/Export
 
 ## 🛠️ Entwicklung
+
+### Datenbank-Setup
+```bash
+# Prisma Client generieren
+npx prisma generate
+
+# Datenbank-Migration
+npx prisma db push
+
+# Prisma Studio öffnen
+npx prisma studio
+```
 
 ### Neue Station hinzufügen
 1. Admin-Bereich öffnen
@@ -68,8 +99,9 @@ revierkompass-v6/
 3. Daten eingeben und speichern
 
 ### Custom-Adressen
-- Werden im localStorage gespeichert
-- Sind nur für den aktuellen Benutzer sichtbar
+- Werden in der Datenbank gespeichert
+- Review-System für Qualitätskontrolle
+- Unterstützung für anonyme Einträge
 
 ## 🚨 Troubleshooting
 
@@ -83,9 +115,23 @@ pkill -f "npm run dev"
 npm start
 ```
 
-### Daten werden nicht geladen
-- Prüfe ob Backend auf Port 3001 läuft
-- Prüfe die `backend/data/polizeistationen.json` Datei
+### Datenbank-Probleme
+```bash
+# Prisma Client neu generieren
+npx prisma generate
+
+# Datenbank zurücksetzen
+npx prisma db push --force-reset
+```
+
+### Vercel Deployment
+```bash
+# Lokaler Vercel-Server
+npm run vercel-dev
+
+# Produktions-Deployment
+npm run vercel-deploy
+```
 
 ## 📝 Lizenz
 
