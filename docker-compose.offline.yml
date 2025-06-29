@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # OSRM Routing Server (Offline)
+  osrm:
+    image: osrm/osrm-backend:latest
+    container_name: revierkompass-osrm
+    command: >
+      sh -c "
+        if [ ! -f /data/baden-wuerttemberg-latest.osrm ]; then
+          echo 'OSRM-Daten nicht gefunden. Bitte laden Sie die Daten herunter und verarbeiten Sie sie.'
+          echo 'Verwende Online-Routing als Fallback...'
+          sleep infinity
+        else
+          echo 'Starte OSRM mit Baden-Württemberg-Daten...'
+          osrm-routed --algorithm mld /data/baden-wuerttemberg-latest.osrm
+        fi
+      "
+    volumes:
+      - ./data/osrm:/data
+    ports:
+      - "5000:5000"
+    environment:
+      - OSRM_THREADS=4
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/route/v1/driving/9.18,48.78;9.19,48.79"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    networks:
+      - revierkompass-network
+
+  # Redis für Caching
+  redis:
+    image: redis:7-alpine
+    container_name: revierkompass-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - revierkompass-network
+
+  # TileServer GL für Offline-Karten
+  tileserver:
+    image: klokantech/tileserver-gl:latest
+    container_name: revierkompass-tileserver
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data/mbtiles:/data
+      - ./data/tileserver-config:/etc/tileserver-gl
+    environment:
+      - MBTILES_FILE=/data/germany.mbtiles
+      - MBTILES_ATTRIBUTION="© OpenStreetMap contributors"
+      - MBTILES_BOUNDS="5.5,47.0,15.5,55.5"
+      - MBTILES_CENTER="10.5,51.25,6"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - revierkompass-network
+
+  # Nginx als Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: revierkompass-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./data/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - osrm
+      - tileserver
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - revierkompass-network
+
+networks:
+  revierkompass-network:
+    driver: bridge 
