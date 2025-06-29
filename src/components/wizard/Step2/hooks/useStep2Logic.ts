@@ -40,6 +40,19 @@ export const useStep2Logic = () => {
   useEffect(() => {
     loadStations();
     
+    // Initialisiere Routing-Service
+    const initializeRouting = async () => {
+      try {
+        // Prüfe lokalen OSRM-Server
+        await routingService.checkOfflineRouting();
+        console.log('🗺️ Routing-Service initialisiert');
+      } catch (error) {
+        console.warn('⚠️ Routing-Service Initialisierung fehlgeschlagen:', error);
+      }
+    };
+    
+    initializeRouting();
+    
     // Polling für Updates alle 30 Sekunden
     const interval = setInterval(() => {
       loadStations();

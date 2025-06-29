@@ -102,7 +102,7 @@ class RoutingService {
   }
 
   // Verbesserte Offline-Routing-Prüfung
-  private async checkOfflineRouting(): Promise<void> {
+  public async checkOfflineRouting(): Promise<void> {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 3000);
@@ -292,7 +292,7 @@ class RoutingService {
     baseUrl: string,
     profile: string = 'driving'
   ): Promise<RouteResponse> {
-    const url = `${baseUrl}/${profile}/${start.lng},${start.lat};${end.lng},${end.lat}`;
+    const url = `${baseUrl}/route/v1/${profile}/${start.lng},${start.lat};${end.lng},${end.lat}`;
     
     const params = new URLSearchParams({
       overview: 'full',

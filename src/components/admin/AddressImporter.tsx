@@ -1,40 +1,24 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, Upload, CheckCircle, AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
-import { importAllStationsWithWarning, showAddressStats, testAPIConnection } from '@/scripts/import-addresses';
+import { Database, Upload, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { importAllStationsWithWarning } from '@/scripts/import-addresses';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AddressImporter: React.FC = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<{ totalCreated: number; totalErrors: number } | null>(null);
-  const [stats, setStats] = useState<{ totalAddresses: number; cityCount: number } | null>(null);
-  const [dbStationCount, setDbStationCount] = useState<number | null>(null);
 
   const handleImport = async () => {
     setIsImporting(true);
     try {
       const result = await importAllStationsWithWarning();
       setImportResult(result);
-      
-      // Aktualisiere Statistiken nach dem Import
-      const stats = showAddressStats();
-      setStats(stats);
     } catch (error) {
       console.error('Import fehlgeschlagen:', error);
     } finally {
       setIsImporting(false);
     }
-  };
-
-  const handleShowStats = () => {
-    const stats = showAddressStats();
-    setStats(stats);
-  };
-
-  const handleTestConnection = async () => {
-    const count = await testAPIConnection();
-    setDbStationCount(count);
   };
 
   return (
@@ -52,40 +36,6 @@ const AddressImporter: React.FC = () => {
 
       {/* Statistiken */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 sm:p-4 rounded-lg">
-          <div className="flex items-center space-x-2">
-            <Database className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-            <span className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-100">
-              Verfügbare Adressen
-            </span>
-          </div>
-          <div className="mt-2">
-            <span className="text-xl sm:text-2xl font-bold text-blue-900 dark:text-blue-100">
-              {stats?.totalAddresses || '?'}
-            </span>
-            <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-300 ml-1">
-              in {stats?.cityCount || '?'} Städten
-            </span>
-          </div>
-        </div>
-
-        <div className="bg-green-50 dark:bg-green-900/20 p-3 sm:p-4 rounded-lg">
-          <div className="flex items-center space-x-2">
-            <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
-            <span className="text-xs sm:text-sm font-medium text-green-900 dark:text-green-100">
-              In Datenbank
-            </span>
-          </div>
-          <div className="mt-2">
-            <span className="text-xl sm:text-2xl font-bold text-green-900 dark:text-green-100">
-              {dbStationCount || '?'}
-            </span>
-            <span className="text-xs sm:text-sm text-green-600 dark:text-green-300 ml-1">
-              Stationen
-            </span>
-          </div>
-        </div>
-
         <div className="bg-orange-50 dark:bg-orange-900/20 p-3 sm:p-4 rounded-lg sm:col-span-2 lg:col-span-1">
           <div className="flex items-center space-x-2">
             <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
@@ -120,22 +70,6 @@ const AddressImporter: React.FC = () => {
       {/* Aktionen */}
       <div className="space-y-3 sm:space-y-4">
         <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
-          <button
-            onClick={handleShowStats}
-            className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
-          >
-            <Database className="h-4 w-4" />
-            <span>Statistiken anzeigen</span>
-          </button>
-
-          <button
-            onClick={handleTestConnection}
-            className="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
-          >
-            <RefreshCw className="h-4 w-4" />
-            <span>DB-Verbindung testen</span>
-          </button>
-
           <Button 
             onClick={handleImport} 
             disabled={isImporting}

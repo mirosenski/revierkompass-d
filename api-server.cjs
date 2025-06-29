@@ -1,15 +1,63 @@
 const express = require('express');
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const fs = require('fs').promises;
+const path = require('path');
 
 const app = express();
 const PORT = 5179;
+
+// Datenbank-Datei
+const DB_FILE = path.join(__dirname, 'database.json');
+
+// In-Memory-Datenbank (wird beim Start geladen)
+let database = {
+  stations: [],
+  addresses: [],
+  lastModified: new Date().toISOString()
+};
+
+// Datenbank laden
+async function loadDatabase() {
+  try {
+    const data = await fs.readFile(DB_FILE, 'utf8');
+    database = JSON.parse(data);
+    console.log('✅ Datenbank geladen:', database.stations.length, 'Stationen');
+  } catch (error) {
+    console.log('📝 Erstelle neue Datenbank...');
+    await saveDatabase();
+  }
+}
+
+// Datenbank speichern
+async function saveDatabase() {
+  try {
+    database.lastModified = new Date().toISOString();
+    await fs.writeFile(DB_FILE, JSON.stringify(database, null, 2));
+    console.log('💾 Datenbank gespeichert');
+  } catch (error) {
+    console.error('❌ Fehler beim Speichern der Datenbank:', error);
+  }
+}
 
 // CORS aktivieren
 app.use(cors());
 
 // JSON-Parsing
 app.use(express.json());
+
+// Health Check Endpunkt
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    services: {
+      osrm: 'available',
+      nominatim: 'available',
+      tileserver: 'available'
+    }
+  });
+});
 
 // Proxy für OSRM
 app.use('/api/maps/route', createProxyMiddleware({
@@ -320,97 +368,128 @@ app.get('/api/maps/geocoding', async (req, res) => {
   }
 });
 
-// Stationen API
+// Stationen API - Echte Datenbank-Integration
 app.get('/api/stationen', (req, res) => {
-  // Statische Polizeistationen für Baden-Württemberg
-  const stations = [
-    {
-      id: '1',
-      name: 'Polizeipräsidium Stuttgart',
-      address: 'Taubenheimstraße 85, 70372 Stuttgart',
-      coordinates: [9.1829, 48.7758],
-      phone: '0711 8990-0',
-      email: 'poststelle.pp.stuttgart@polizei.bwl.de',
-      type: 'praesidium',
-      isActive: true
-    },
-    {
-      id: '2',
-      name: 'Polizeipräsidium Karlsruhe',
-      address: 'Erbprinzenstraße 96, 76133 Karlsruhe',
-      coordinates: [8.4037, 49.0069],
-      phone: '0721 666-0',
-      email: 'poststelle.pp.karlsruhe@polizei.bwl.de',
-      type: 'praesidium',
-      isActive: true
-    },
-    {
-      id: '3',
-      name: 'Polizeipräsidium Mannheim',
-      address: 'Collinistraße 1, 68161 Mannheim',
-      coordinates: [8.4660, 49.4875],
-      phone: '0621 174-0',
-      email: 'poststelle.pp.mannheim@polizei.bwl.de',
-      type: 'praesidium',
-      isActive: true
-    },
-    {
-      id: '4',
-      name: 'Polizeipräsidium Freiburg',
-      address: 'Basler Landstraße 113, 79111 Freiburg',
-      coordinates: [7.8421, 47.9990],
-      phone: '0761 882-0',
-      email: 'poststelle.pp.freiburg@polizei.bwl.de',
-      type: 'praesidium',
-      isActive: true
-    },
-    {
-      id: '5',
-      name: 'Polizeipräsidium Heilbronn',
-      address: 'Cäcilienstraße 56, 74072 Heilbronn',
-      coordinates: [9.2185, 49.1406],
-      phone: '07131 104-0',
-      email: 'poststelle.pp.heilbronn@polizei.bwl.de',
-      type: 'praesidium',
-      isActive: true
-    },
-    {
-      id: '6',
-      name: 'Polizeirevier Stuttgart-Mitte',
-      address: 'Dorotheenstraße 4, 70173 Stuttgart',
-      coordinates: [9.1770, 48.7758],
-      phone: '0711 8990-1000',
-      email: 'revier.mitte.stuttgart@polizei.bwl.de',
-      type: 'revier',
-      parentId: '1',
-      isActive: true
-    },
-    {
-      id: '7',
-      name: 'Polizeirevier Karlsruhe-Mitte',
-      address: 'Kaiserstraße 146, 76133 Karlsruhe',
-      coordinates: [8.4037, 49.0069],
-      phone: '0721 666-1000',
-      email: 'revier.mitte.karlsruhe@polizei.bwl.de',
-      type: 'revier',
-      parentId: '2',
-      isActive: true
-    }
-  ];
-  
-  res.json(stations);
+  res.json(database.stations);
 });
 
-app.post('/api/stationen', (req, res) => {
-  // Neue Station erstellen (simuliert)
-  const newStation = {
-    id: Date.now().toString(),
-    ...req.body,
-    isActive: true,
-    createdAt: new Date().toISOString()
-  };
-  
-  res.status(201).json(newStation);
+app.post('/api/stationen', async (req, res) => {
+  try {
+    const newStation = {
+      id: Date.now().toString(),
+      ...req.body,
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+    
+    database.stations.push(newStation);
+    await saveDatabase();
+    
+    res.status(201).json(newStation);
+  } catch (error) {
+    console.error('❌ Fehler beim Erstellen der Station:', error);
+    res.status(500).json({ error: 'Fehler beim Erstellen der Station' });
+  }
+});
+
+app.put('/api/stationen/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const stationIndex = database.stations.findIndex(s => s.id === id);
+    
+    if (stationIndex === -1) {
+      return res.status(404).json({ error: 'Station nicht gefunden' });
+    }
+    
+    database.stations[stationIndex] = {
+      ...database.stations[stationIndex],
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    };
+    
+    await saveDatabase();
+    res.json(database.stations[stationIndex]);
+  } catch (error) {
+    console.error('❌ Fehler beim Aktualisieren der Station:', error);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Station' });
+  }
+});
+
+app.delete('/api/stationen/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const stationIndex = database.stations.findIndex(s => s.id === id);
+    
+    if (stationIndex === -1) {
+      return res.status(404).json({ error: 'Station nicht gefunden' });
+    }
+    
+    database.stations.splice(stationIndex, 1);
+    await saveDatabase();
+    
+    res.json({ message: 'Station erfolgreich gelöscht' });
+  } catch (error) {
+    console.error('❌ Fehler beim Löschen der Station:', error);
+    res.status(500).json({ error: 'Fehler beim Löschen der Station' });
+  }
+});
+
+// Alle Stationen löschen
+app.delete('/api/stationen', async (req, res) => {
+  try {
+    database.stations = [];
+    await saveDatabase();
+    res.json({ message: 'Alle Stationen erfolgreich gelöscht' });
+  } catch (error) {
+    console.error('❌ Fehler beim Löschen aller Stationen:', error);
+    res.status(500).json({ error: 'Fehler beim Löschen aller Stationen' });
+  }
+});
+
+// Stationen importieren
+app.post('/api/stationen/import', async (req, res) => {
+  try {
+    const { stations } = req.body;
+    
+    if (!Array.isArray(stations)) {
+      return res.status(400).json({ error: 'Stations-Daten müssen ein Array sein' });
+    }
+    
+    // Neue IDs für importierte Stationen
+    const importedStations = stations.map(station => ({
+      ...station,
+      id: station.id || Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      isActive: true,
+      createdAt: new Date().toISOString()
+    }));
+    
+    database.stations = importedStations;
+    await saveDatabase();
+    
+    res.json({ 
+      message: `${importedStations.length} Stationen erfolgreich importiert`,
+      count: importedStations.length
+    });
+  } catch (error) {
+    console.error('❌ Fehler beim Importieren der Stationen:', error);
+    res.status(500).json({ error: 'Fehler beim Importieren der Stationen' });
+  }
+});
+
+// Adressen API
+app.get('/api/addresses', (req, res) => {
+  res.json(database.addresses);
+});
+
+app.delete('/api/addresses', async (req, res) => {
+  try {
+    database.addresses = [];
+    await saveDatabase();
+    res.json({ message: 'Alle Adressen erfolgreich gelöscht' });
+  } catch (error) {
+    console.error('❌ Fehler beim Löschen aller Adressen:', error);
+    res.status(500).json({ error: 'Fehler beim Löschen aller Adressen' });
+  }
 });
 
 // Health Check
@@ -418,7 +497,10 @@ app.get('/api/maps/health', (req, res) => {
   res.json({ status: 'healthy', services: { routing: true, geocoding: true, tiles: true } });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  // Datenbank beim Start laden
+  await loadDatabase();
+  
   console.log(`🗺️ API-Server läuft auf Port ${PORT}`);
   console.log(`📡 Verfügbare Endpunkte:`);
   console.log(`   - GET  /api/maps/capabilities`);
@@ -428,4 +510,10 @@ app.listen(PORT, () => {
   console.log(`   - POST /api/maps/route`);
   console.log(`   - GET  /api/maps/geocoding`);
   console.log(`   - GET  /api/maps/health`);
+  console.log(`   - GET  /api/stationen`);
+  console.log(`   - POST /api/stationen`);
+  console.log(`   - PUT  /api/stationen/:id`);
+  console.log(`   - DELETE /api/stationen/:id`);
+  console.log(`   - DELETE /api/stationen (alle löschen)`);
+  console.log(`   - POST /api/stationen/import`);
 }); 

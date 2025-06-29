@@ -2,9 +2,47 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
+const http = require('http');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const fetch = require('node-fetch');
+
+// Einfache fetch-ähnliche Funktion mit https/http
+const fetch = (url, options = {}) => {
+  return new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const isHttps = urlObj.protocol === 'https:';
+    const client = isHttps ? https : http;
+    
+    const req = client.request(url, {
+      method: options.method || 'GET',
+      headers: options.headers || {},
+      timeout: options.timeout || 5000
+    }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          json: () => JSON.parse(data),
+          text: () => data
+        });
+      });
+    });
+    
+    req.on('error', reject);
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Request timeout'));
+    });
+    
+    if (options.body) {
+      req.write(options.body);
+    }
+    req.end();
+  });
+};
 
 const app = express();
 const PORT = process.env.PORT || 3001;

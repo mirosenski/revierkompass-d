@@ -23,6 +23,7 @@ import { createAllReutlingenAddresses } from '@/data/reutlingen-addresses'
 import { createAllStuttgartAddresses } from '@/data/stuttgart-addresses'
 import { createAllUlmAddresses } from '@/data/ulm-addresses'
 import { createAllEinsatzAddresses } from '@/data/einsatz-addresses'
+import { useStationStore } from '@/store/useStationStore'
 
 // ===== MAIN COMPONENT =====
 const AdminStationManagement: React.FC = () => {
@@ -40,6 +41,8 @@ const AdminStationManagement: React.FC = () => {
     setTypeFilter,
     clearSelection
   } = useAdminStore();
+
+  const { stations: stationStoreStations } = useStationStore();
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -65,6 +68,7 @@ const AdminStationManagement: React.FC = () => {
   const [isStuttgartImporting, setIsStuttgartImporting] = useState(false);
   const [isUlmImporting, setIsUlmImporting] = useState(false);
   const [isEinsatzImporting, setIsEinsatzImporting] = useState(false);
+  const [isDatabaseLoading, setIsDatabaseLoading] = useState(false);
 
   // Navigation tabs
   const navigationTabs = [
@@ -389,6 +393,105 @@ const AdminStationManagement: React.FC = () => {
     }
   }, [loadStations]);
 
+  // Datenbank leeren
+  const clearDatabase = async () => {
+    try {
+      setIsDatabaseLoading(true);
+      const response = await fetch('http://localhost:5179/api/stationen', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        toast.success('✅ Datenbank erfolgreich geleert!');
+        await loadStations();
+      } else {
+        toast.error('❌ Fehler beim Leeren der Datenbank');
+      }
+    } catch (error) {
+      console.error('Fehler beim Leeren der Datenbank:', error);
+      toast.error('❌ Fehler beim Leeren der Datenbank');
+    } finally {
+      setIsDatabaseLoading(false);
+    }
+  };
+
+  // Test-Stationen importieren
+  const importTestStations = async () => {
+    try {
+      setIsDatabaseLoading(true);
+      const testStations = [
+        {
+          name: 'Polizeipräsidium Stuttgart',
+          address: 'Taubenheimstraße 85, 70372 Stuttgart',
+          coordinates: [9.1829, 48.7758],
+          phone: '0711 8990-0',
+          email: 'poststelle.pp.stuttgart@polizei.bwl.de',
+          type: 'praesidium' as const
+        },
+        {
+          name: 'Polizeipräsidium Karlsruhe',
+          address: 'Erbprinzenstraße 96, 76133 Karlsruhe',
+          coordinates: [8.4037, 49.0069],
+          phone: '0721 666-0',
+          email: 'poststelle.pp.karlsruhe@polizei.bwl.de',
+          type: 'praesidium' as const
+        },
+        {
+          name: 'Polizeipräsidium Mannheim',
+          address: 'Collinistraße 1, 68161 Mannheim',
+          coordinates: [8.4660, 49.4875],
+          phone: '0621 174-0',
+          email: 'poststelle.pp.mannheim@polizei.bwl.de',
+          type: 'praesidium' as const
+        },
+        {
+          name: 'Polizeirevier Stuttgart-Mitte',
+          address: 'Dorotheenstraße 4, 70173 Stuttgart',
+          coordinates: [9.1770, 48.7758],
+          phone: '0711 8990-1000',
+          email: 'revier.mitte.stuttgart@polizei.bwl.de',
+          type: 'revier' as const,
+          parentId: '1'
+        }
+      ];
+
+      const response = await fetch('http://localhost:5179/api/stationen/import', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stations: testStations })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        toast.success(`✅ ${result.message}`);
+        await loadStations();
+      } else {
+        toast.error('❌ Fehler beim Importieren der Stationen');
+      }
+    } catch (error) {
+      console.error('Fehler beim Importieren der Stationen:', error);
+      toast.error('❌ Fehler beim Importieren der Stationen');
+    } finally {
+      setIsDatabaseLoading(false);
+    }
+  };
+
+  // Datenbank-Status prüfen
+  const checkDatabaseStatus = async () => {
+    try {
+      const response = await fetch('http://localhost:5179/api/stationen');
+      const stations = await response.json();
+      toast.success(`📊 Datenbank enthält ${stations.length} Stationen`);
+    } catch (error) {
+      toast.error('❌ Fehler beim Prüfen des Datenbank-Status');
+    }
+  };
+
   // Loading State
   if (isLoading && stations.length === 0) {
     return (
@@ -445,6 +548,37 @@ const AdminStationManagement: React.FC = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              {/* Datenbank-Operationen */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={checkDatabaseStatus}
+                  disabled={isDatabaseLoading}
+                  className="flex items-center gap-2 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
+                  title="Datenbank-Status prüfen"
+                >
+                  <Database className="w-4 h-4" />
+                  <span>Status</span>
+                </button>
+                <button
+                  onClick={clearDatabase}
+                  disabled={isDatabaseLoading}
+                  className="flex items-center gap-2 px-3 py-2 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
+                  title="Datenbank leeren"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>Leeren</span>
+                </button>
+                <button
+                  onClick={importTestStations}
+                  disabled={isDatabaseLoading}
+                  className="flex items-center gap-2 px-3 py-2 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
+                  title="Test-Stationen importieren"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Import</span>
+                </button>
+              </div>
+              
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer bg-white/50 dark:bg-gray-700/50 px-3 py-2 rounded-lg">
                 <input
                   type="checkbox"
