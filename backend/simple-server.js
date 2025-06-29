@@ -45,7 +45,7 @@ const fetch = (url, options = {}) => {
 };
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5179;
 
 // Trust proxy für IP-Erkennung
 app.set('trust proxy', 1);
@@ -80,12 +80,32 @@ app.use('/data', express.static(path.join(__dirname, 'data'), {
   }
 }));
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'RevierKompass API',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/health',
+      stations: '/api/stationen',
+      geocoding: '/api/maps/geocoding',
+      addresses: '/api/addresses'
+    }
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
+    services: {
+      database: 'connected',
+      api: 'running',
+      port: PORT
+    }
   });
 });
 
