@@ -82,38 +82,38 @@ const AddressCard: React.FC<AddressCardProps> = ({
   const canReject = isAdmin && address.reviewStatus === 'pending'
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 flex flex-col h-full relative">
+    <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 flex flex-col h-full relative">
       {/* Checkbox für Mehrfachauswahl - jetzt innerhalb der Karte */}
       {onCheck && (
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 z-20">
           <input
             type="checkbox"
             checked={checked}
             onChange={e => onCheck(address.id, e.target.checked)}
-            className="w-5 h-5 rounded border-2 border-gray-300 bg-white dark:bg-gray-900 shadow-md focus:ring-2 focus:ring-indigo-500 transition-all duration-150 hover:border-indigo-400 cursor-pointer"
+            className="w-4 h-4 sm:w-5 sm:h-5 rounded border-2 border-gray-300 bg-white dark:bg-gray-900 shadow-md focus:ring-2 focus:ring-indigo-500 transition-all duration-150 hover:border-indigo-400 cursor-pointer"
           />
         </div>
       )}
       
-      <div className="p-6 flex flex-col gap-4 flex-1">
+      <div className="p-4 sm:p-6 flex flex-col gap-3 sm:gap-4 flex-1">
         {/* Header-Bereich mit Icon, Name und Badges */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-start gap-3">
-            <div className="bg-indigo-100 dark:bg-indigo-900/20 rounded-lg p-2 flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+        <div className="flex flex-col gap-2 sm:gap-3">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <div className="bg-indigo-100 dark:bg-indigo-900/20 rounded-lg p-1.5 sm:p-2 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 break-words">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-1 break-words">
                 {address.name}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm break-words">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 break-words">
                 {address.street}, {address.zipCode} {address.city}
               </p>
             </div>
           </div>
           
           {/* Badges in einer flexiblen Zeile */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             {getStatusBadge(address.reviewStatus)}
             {getAddressTypeBadge()}
             {!address.isActive && (
@@ -125,12 +125,12 @@ const AddressCard: React.FC<AddressCardProps> = ({
         </div>
 
         {/* Informationsbereich */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4">
           <div>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
               Koordinaten
             </p>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
               {address.coordinates ? 
                 (Array.isArray(address.coordinates) ? 
                   `${address.coordinates[0]?.toFixed(4) || 'N/A'}, ${address.coordinates[1]?.toFixed(4) || 'N/A'}` :
@@ -144,16 +144,16 @@ const AddressCard: React.FC<AddressCardProps> = ({
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
               Präsidium
             </p>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
               {getPraesidiumName(address.parentId)}
             </p>
           </div>
         </div>
 
         {/* Footer-Bereich mit Metadaten und Aktionen */}
-        <div className="flex flex-col gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
+        <div className="flex flex-col gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
           {/* Metadaten */}
-          <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-gray-500 dark:text-gray-400">
             {address.isVerified && (
               <span className="flex items-center gap-1">
                 <Check className="w-3 h-3 text-green-500" />
@@ -178,19 +178,19 @@ const AddressCard: React.FC<AddressCardProps> = ({
             {canApprove && (
               <button
                 onClick={() => onApprove?.(address.id)}
-                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
                 title="Genehmigen"
               >
-                <Check className="w-4 h-4" />
+                <Check className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             )}
             {canReject && (
               <button
                 onClick={() => onReject?.(address.id)}
-                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 title="Ablehnen"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             )}
             
@@ -198,10 +198,10 @@ const AddressCard: React.FC<AddressCardProps> = ({
             {isAdmin && address.reviewStatus === 'approved' && onConvertToStation && (
               <button
                 onClick={() => onConvertToStation(address)}
-                className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                 title="Zu Station konvertieren"
               >
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             )}
             
@@ -209,10 +209,10 @@ const AddressCard: React.FC<AddressCardProps> = ({
             {canEdit && onEdit && (
               <button
                 onClick={() => onEdit(address)}
-                className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
                 title="Bearbeiten"
               >
-                <Edit2 className="w-4 h-4" />
+                <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             )}
             
@@ -220,10 +220,10 @@ const AddressCard: React.FC<AddressCardProps> = ({
             {canDelete && onDelete && (
               <button
                 onClick={() => onDelete(address.id)}
-                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 title="Löschen"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             )}
           </div>

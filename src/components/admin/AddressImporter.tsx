@@ -41,65 +41,65 @@ const AddressImporter: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg"
+      className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg"
     >
-      <div className="flex items-center space-x-3 mb-6">
-        <Database className="h-6 w-6 text-blue-600" />
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+      <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+        <Database className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
           Adress-Import Manager
         </h2>
       </div>
 
       {/* Statistiken */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 sm:p-4 rounded-lg">
           <div className="flex items-center space-x-2">
-            <Database className="h-5 w-5 text-blue-600" />
-            <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+            <Database className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+            <span className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-100">
               Verfügbare Adressen
             </span>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+            <span className="text-xl sm:text-2xl font-bold text-blue-900 dark:text-blue-100">
               {stats?.totalAddresses || '?'}
             </span>
-            <span className="text-sm text-blue-600 dark:text-blue-300 ml-1">
+            <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-300 ml-1">
               in {stats?.cityCount || '?'} Städten
             </span>
           </div>
         </div>
 
-        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+        <div className="bg-green-50 dark:bg-green-900/20 p-3 sm:p-4 rounded-lg">
           <div className="flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="text-sm font-medium text-green-900 dark:text-green-100">
+            <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+            <span className="text-xs sm:text-sm font-medium text-green-900 dark:text-green-100">
               In Datenbank
             </span>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-bold text-green-900 dark:text-green-100">
+            <span className="text-xl sm:text-2xl font-bold text-green-900 dark:text-green-100">
               {dbStationCount || '?'}
             </span>
-            <span className="text-sm text-green-600 dark:text-green-300 ml-1">
+            <span className="text-xs sm:text-sm text-green-600 dark:text-green-300 ml-1">
               Stationen
             </span>
           </div>
         </div>
 
-        <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+        <div className="bg-orange-50 dark:bg-orange-900/20 p-3 sm:p-4 rounded-lg sm:col-span-2 lg:col-span-1">
           <div className="flex items-center space-x-2">
-            <Upload className="h-5 w-5 text-orange-600" />
-            <span className="text-sm font-medium text-orange-900 dark:text-orange-100">
+            <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
+            <span className="text-xs sm:text-sm font-medium text-orange-900 dark:text-orange-100">
               Import Status
             </span>
           </div>
           <div className="mt-2">
             {importResult ? (
               <div>
-                <span className="text-2xl font-bold text-orange-900 dark:text-orange-100">
+                <span className="text-xl sm:text-2xl font-bold text-orange-900 dark:text-orange-100">
                   {importResult.totalCreated}
                 </span>
-                <span className="text-sm text-orange-600 dark:text-orange-300 ml-1">
+                <span className="text-xs sm:text-sm text-orange-600 dark:text-orange-300 ml-1">
                   importiert
                 </span>
                 {importResult.totalErrors > 0 && (
@@ -109,7 +109,7 @@ const AddressImporter: React.FC = () => {
                 )}
               </div>
             ) : (
-              <span className="text-sm text-orange-600 dark:text-orange-300">
+              <span className="text-xs sm:text-sm text-orange-600 dark:text-orange-300">
                 Bereit zum Import
               </span>
             )}
@@ -118,11 +118,11 @@ const AddressImporter: React.FC = () => {
       </div>
 
       {/* Aktionen */}
-      <div className="space-y-4">
-        <div className="flex flex-wrap gap-3">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
           <button
             onClick={handleShowStats}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+            className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
           >
             <Database className="h-4 w-4" />
             <span>Statistiken anzeigen</span>
@@ -130,7 +130,7 @@ const AddressImporter: React.FC = () => {
 
           <button
             onClick={handleTestConnection}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+            className="px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
           >
             <RefreshCw className="h-4 w-4" />
             <span>DB-Verbindung testen</span>
@@ -139,7 +139,7 @@ const AddressImporter: React.FC = () => {
           <Button 
             onClick={handleImport} 
             disabled={isImporting}
-            className="w-full"
+            className="w-full sm:w-auto"
             variant="default"
           >
             {isImporting ? (
@@ -157,14 +157,14 @@ const AddressImporter: React.FC = () => {
         </div>
 
         {/* Info-Box */}
-        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-          <div className="flex items-start space-x-3">
-            <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+        <div className="bg-gray-50 dark:bg-gray-700 p-3 sm:p-4 rounded-lg">
+          <div className="flex items-start space-x-2 sm:space-x-3">
+            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 mt-0.5 flex-shrink-0" />
             <div>
-              <h4 className="font-medium text-gray-900 dark:text-white mb-1">
+              <h4 className="font-medium text-gray-900 dark:text-white mb-1 text-sm sm:text-base">
                 Adress-Import Information
               </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 Dieser Import lädt alle verfügbaren Polizeistationen aus den Daten-Dateien in die Datenbank. 
                 Das umfasst Präsidien und Reviere aus 13 Städten in Baden-Württemberg. 
                 Der Import kann einige Minuten dauern.
@@ -178,23 +178,23 @@ const AddressImporter: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            className={`p-4 rounded-lg border-l-4 ${
+            className={`p-3 sm:p-4 rounded-lg border-l-4 ${
               importResult.totalErrors === 0 
                 ? 'bg-green-50 dark:bg-green-900/20 border-green-400' 
                 : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400'
             }`}
           >
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               {importResult.totalErrors === 0 ? (
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
               ) : (
-                <AlertCircle className="h-5 w-5 text-yellow-500" />
+                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 flex-shrink-0" />
               )}
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-white">
+                <h4 className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                   Import abgeschlossen
                 </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                   {importResult.totalCreated} Stationen erfolgreich importiert
                   {importResult.totalErrors > 0 && ` (${importResult.totalErrors} Fehler aufgetreten)`}
                 </p>

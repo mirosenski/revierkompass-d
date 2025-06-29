@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { Plus, Building2, AlertTriangle, MapPin, BarChart3, Settings, Database } from 'lucide-react'
+import { Plus, Building2, AlertTriangle, MapPin, BarChart3, Settings, Database, List, Grid3X3 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAdminStore } from '@/lib/store/admin-store'
 import { Station } from '@/types/station.types'
 import { FilterState } from './types'
 import { LoadingSpinner } from './LoadingSpinner'
 import { StationCard } from './StationCard'
+import { CompactStationList } from './CompactStationList'
 import { StationModal } from './StationModal'
 import { StationFilters } from './StationFilters'
 import { createAllAalenAddresses } from '@/data/aalen-addresses'
@@ -43,13 +44,13 @@ const AdminStationManagement: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     city: '',
-    type: 'all',
     showInactive: false
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStation, setEditingStation] = useState<Station | null>(null);
   const [expandedPresidia, setExpandedPresidia] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'cards' | 'compact'>('cards');
   const [isAalenImporting, setIsAalenImporting] = useState(false);
   const [isFreiburgImporting, setIsFreiburgImporting] = useState(false);
   const [isHeilbronnImporting, setIsHeilbronnImporting] = useState(false);
@@ -81,18 +82,13 @@ const AdminStationManagement: React.FC = () => {
   // Filter stations based on search
   const debouncedSearch = useDebounce(filters.search, 300);
   useEffect(() => {
-    setSearchQuery(debouncedSearch);
+    setSearchQuery(debouncedSearch || '');
   }, [debouncedSearch, setSearchQuery]);
 
   // Filter stations based on city
   useEffect(() => {
-    setCityFilter(filters.city);
+    setCityFilter(filters.city || '');
   }, [filters.city, setCityFilter]);
-
-  // Filter stations based on type
-  useEffect(() => {
-    setTypeFilter(filters.type === 'all' ? 'all' : filters.type);
-  }, [filters.type, setTypeFilter]);
 
   // Get all cities for filter dropdown
   const allCities = useMemo(() => {
@@ -120,10 +116,12 @@ const AdminStationManagement: React.FC = () => {
     setFilters({
       search: '',
       city: '',
-      type: 'all',
       showInactive: false
     });
-  }, []);
+    // Also clear store filters
+    setSearchQuery('');
+    setCityFilter('');
+  }, [setSearchQuery, setCityFilter]);
 
   // Handle station creation
   const handleCreateStation = useCallback(() => {
@@ -180,6 +178,19 @@ const AdminStationManagement: React.FC = () => {
       }
       return newSet;
     });
+  }, []);
+
+  // Expand all Präsidien
+  const expandAllPraesidien = useCallback(() => {
+    const allPraesidienIds = filteredStations
+      .filter(s => s.type === 'praesidium')
+      .map(s => s.id);
+    setExpandedPresidia(new Set(allPraesidienIds));
+  }, [filteredStations]);
+
+  // Collapse all Präsidien
+  const collapseAllPraesidien = useCallback(() => {
+    setExpandedPresidia(new Set());
   }, []);
 
   const handleAalenImport = useCallback(async () => {
@@ -413,25 +424,28 @@ const AdminStationManagement: React.FC = () => {
     );
   }
 
-  const hasActiveFilters = Boolean(filters.search || filters.city || filters.type !== 'all');
+  const hasActiveFilters = Boolean(
+    (filters.search && filters.search.trim() !== '') || 
+    (filters.city && filters.city.trim() !== '')
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Sticky Header */}
       <div className="sticky top-0 z-40 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <div className="w-full sm:w-auto">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 Stationen verwalten
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
                 {filteredStations.length} von {stations.length} Stationen
               </p>
             </div>
             
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer bg-white/50 dark:bg-gray-700/50 px-3 py-2 rounded-lg">
                 <input
                   type="checkbox"
                   checked={filters.showInactive}
@@ -441,12 +455,38 @@ const AdminStationManagement: React.FC = () => {
                 <span>Inaktive anzeigen</span>
               </label>
               
+              {/* View Mode Toggle */}
+              <div className="flex items-center bg-white/50 dark:bg-gray-700/50 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('cards')}
+                  className={`p-2 rounded-md transition-all duration-200 ${
+                    viewMode === 'cards'
+                      ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                  }`}
+                  title="Karten-Ansicht"
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('compact')}
+                  className={`p-2 rounded-md transition-all duration-200 ${
+                    viewMode === 'compact'
+                      ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                  }`}
+                  title="Listen-Ansicht"
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
+              
               <button
                 onClick={handleCreateStation}
-                className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-sm sm:text-base font-medium"
               >
-                <Plus className="w-5 h-5" />
-                <span className="font-medium">Neue Station</span>
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>Neue Station</span>
               </button>
             </div>
           </div>
@@ -454,7 +494,7 @@ const AdminStationManagement: React.FC = () => {
       </div>
 
       {/* Advanced Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <StationFilters
           filters={filters}
           onFilterChange={handleFilterChange}
@@ -466,16 +506,16 @@ const AdminStationManagement: React.FC = () => {
       </div>
 
       {/* Station Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-8">
         {stations.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-4 w-20 h-20 mx-auto mb-4">
-              <Building2 className="w-12 h-12 text-gray-400 mx-auto" />
+          <div className="text-center py-8 sm:py-12">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-3 sm:p-4 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4">
+              <Building2 className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
               Keine Stationen gefunden
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 px-4">
               {hasActiveFilters 
                 ? 'Versuchen Sie, die Filter anzupassen oder zu löschen.' 
                 : 'Erstellen Sie Ihre erste Station.'}
@@ -483,59 +523,121 @@ const AdminStationManagement: React.FC = () => {
             {hasActiveFilters ? (
               <button
                 onClick={clearFilters}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-sm sm:text-base"
               >
                 Filter löschen
               </button>
             ) : (
               <button
                 onClick={handleCreateStation}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm sm:text-base"
               >
                 Erste Station erstellen
               </button>
             )}
           </div>
         ) : (
-          <div className="space-y-4">
-            {/* Zeige alle Präsidien an */}
-            {stations
-              .filter(s => s.type === 'praesidium')
-              .map((praesidium) => {
-                const allReviere = getReviere(praesidium.id);
-                
-                return (
-                  <div key={praesidium.id} className="animate-in fade-in-50 duration-200">
-                    <StationCard
-                      station={praesidium}
-                      onEdit={handleEditStation}
-                      onDelete={handleDeleteStation}
-                      isExpanded={expandedPresidia.has(praesidium.id)}
-                      onToggle={() => togglePraesidiumExpansion(praesidium.id)}
-                    >
-                      {expandedPresidia.has(praesidium.id) && allReviere.length > 0 && (
-                        <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50/50 dark:bg-gray-800/50">
-                          <div className="space-y-3">
-                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                              Reviere ({allReviere.length})
-                            </h4>
-                            {allReviere.map((revier) => (
-                              <StationCard
-                                key={revier.id}
-                                station={revier}
-                                onEdit={handleEditStation}
-                                onDelete={handleDeleteStation}
-                                isExpanded={false}
-                                onToggle={() => {}}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </StationCard>
+          <div className="space-y-3 sm:space-y-4">
+            {viewMode === 'cards' ? (
+              // Karten-Ansicht
+              <>
+                {/* Expand/Collapse Controls */}
+                <div className="flex items-center justify-between bg-white/50 dark:bg-gray-800/50 rounded-xl p-3 sm:p-4 border border-gray-200/50 dark:border-gray-700/50">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Präsidien verwalten
+                    </span>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={expandAllPraesidien}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 rounded-lg transition-colors text-xs font-medium"
+                      title="Alle Präsidien ausklappen"
+                    >
+                      <span>Alle ausklappen</span>
+                    </button>
+                    <button
+                      onClick={collapseAllPraesidien}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-xs font-medium"
+                      title="Alle Präsidien schließen"
+                    >
+                      <span>Alle schließen</span>
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Zeige alle Präsidien an */}
+                {filteredStations
+                  .filter(s => s.type === 'praesidium')
+                  .map((praesidium) => {
+                    const allReviere = getReviere(praesidium.id);
+                    
+                    return (
+                      <div key={praesidium.id} className="animate-in fade-in-50 duration-200">
+                        <StationCard
+                          station={praesidium}
+                          onEdit={handleEditStation}
+                          onDelete={handleDeleteStation}
+                          isExpanded={expandedPresidia.has(praesidium.id)}
+                          onToggle={() => togglePraesidiumExpansion(praesidium.id)}
+                        >
+                          {expandedPresidia.has(praesidium.id) && allReviere.length > 0 && (
+                            <div className="border-t border-gray-200 dark:border-gray-700 p-3 sm:p-4 bg-gray-50/50 dark:bg-gray-800/50">
+                              <div className="space-y-3">
+                                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                  Reviere ({allReviere.length})
+                                </h4>
+                                {allReviere.map((revier) => (
+                                  <StationCard
+                                    key={revier.id}
+                                    station={revier}
+                                    onEdit={handleEditStation}
+                                    onDelete={handleDeleteStation}
+                                    isExpanded={false}
+                                    onToggle={() => {}}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </StationCard>
+                      </div>
+                    );
+                  })}
+              </>
+            ) : (
+              // Kompakte Listen-Ansicht
+              <div className="space-y-4">
+                {/* Präsidien */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                    Polizeipräsidien ({filteredStations.filter(s => s.type === 'praesidium').length})
+                  </h3>
+                  <CompactStationList
+                    stations={filteredStations.filter(s => s.type === 'praesidium')}
+                    onEdit={handleEditStation}
+                    onDelete={handleDeleteStation}
+                    className="space-y-2"
+                  />
+                </div>
+                
+                {/* Reviere */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-gray-600" />
+                    Polizeireviere ({filteredStations.filter(s => s.type === 'revier').length})
+                  </h3>
+                  <CompactStationList
+                    stations={filteredStations.filter(s => s.type === 'revier')}
+                    onEdit={handleEditStation}
+                    onDelete={handleDeleteStation}
+                    className="space-y-2"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

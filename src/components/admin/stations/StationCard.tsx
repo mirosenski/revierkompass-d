@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Edit2, Trash2, ChevronDown, ChevronRight, MapPin, Phone, Mail, Clock, Building2, X, Check } from 'lucide-react'
+import { Edit2, Trash2, ChevronDown, ChevronRight, MapPin, Phone, Mail, Clock, Shield, Target, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
 import { StationCardProps } from './types'
 
 export const StationCard: React.FC<StationCardProps> = React.memo(({ 
@@ -23,113 +23,157 @@ export const StationCard: React.FC<StationCardProps> = React.memo(({
   }, [station.name, station.id, onDelete]);
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${
+    <div className={`relative overflow-hidden transition-all duration-300 border ${
       isPraesidium 
-        ? 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 shadow-lg' 
-        : 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-700/50 shadow-md ml-4 md:ml-8'
-    } hover:shadow-xl hover:scale-[1.01] border border-gray-200/50 dark:border-gray-600/50`}>
+        ? 'bg-white/15 dark:bg-gray-800/25 backdrop-blur-md shadow-lg hover:shadow-xl border-white/25 dark:border-gray-700/40' 
+        : 'bg-white/25 dark:bg-gray-900/30 backdrop-blur-sm shadow-md hover:shadow-lg ml-3 sm:ml-6 md:ml-8 border-white/30 dark:border-gray-700/40'
+    } rounded-xl hover:border-white/40 dark:hover:border-gray-600/60`}>
       
-      {/* Status Badges */}
-      <div className="absolute top-4 right-4 flex gap-2 z-10">
-        {station.notdienst24h && (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 shadow-sm">
-            <Clock className="w-3 h-3" />
-            24h
-          </span>
-        )}
-        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium shadow-sm ${
-          station.isActive 
-            ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300' 
-            : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-        }`}>
-          {station.isActive ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
-          {station.isActive ? 'Aktiv' : 'Inaktiv'}
-        </span>
-      </div>
-
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3 flex-1">
+      {/* Header Bar */}
+      <div className={`px-4 sm:px-6 py-3 sm:py-4 border-b ${
+        isPraesidium 
+          ? 'bg-white/20 dark:bg-gray-700/30 border-white/30 dark:border-gray-600/40' 
+          : 'bg-white/30 dark:bg-gray-800/30 border-white/40 dark:border-gray-700/30'
+      } rounded-t-xl`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
             {isPraesidium && (
               <button
                 onClick={onToggle}
-                className="p-2 hover:bg-white/70 dark:hover:bg-gray-700/70 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="p-2 sm:p-3 hover:bg-blue-100/80 dark:hover:bg-blue-900/40 rounded-lg sm:rounded-xl transition-all duration-300 focus:outline-none focus:ring-3 focus:ring-blue-400/70 shadow-md hover:shadow-lg border border-blue-200/60 dark:border-blue-700/50 flex-shrink-0"
                 aria-label={isExpanded ? 'Reviere ausblenden' : 'Reviere anzeigen'}
-                aria-expanded={isExpanded}
               >
                 {isExpanded ? 
-                  <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-300" /> : 
-                  <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                  <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 text-blue-800 dark:text-blue-300 rotate-180 transition-transform duration-300" /> : 
+                  <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-blue-800 dark:text-blue-300 transition-transform duration-300" />
                 }
               </button>
             )}
-            <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 truncate">
-                <Building2 className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                <span className="truncate">{station.name}</span>
+            
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              {isPraesidium ? (
+                <Shield className="w-5 h-5 sm:w-7 sm:h-7 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+              ) : (
+                <Target className="w-4 h-4 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 flex-shrink-0" />
+              )}
+              <h3 className="text-base sm:text-xl font-bold text-gray-900 dark:text-white tracking-wide truncate">
+                {station.name}
               </h3>
-              <span className={`inline-flex items-center mt-2 px-3 py-1 rounded-lg text-xs font-medium ${
-                isPraesidium 
-                  ? 'bg-blue-200 dark:bg-blue-800/50 text-blue-900 dark:text-blue-200'
-                  : 'bg-green-200 dark:bg-green-800/50 text-green-900 dark:text-green-200'
+            </div>
+          </div>
+
+          {/* Status Indicators */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {station.notdienst24h && (
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 bg-red-100/90 dark:bg-red-900/40 backdrop-blur-sm border border-red-200/60 dark:border-red-800/60 rounded-full shadow-lg">
+                <AlertTriangle className="w-3 h-3 sm:w-5 sm:h-5 text-red-600 dark:text-red-400" />
+                <span className="text-xs sm:text-sm font-bold text-red-700 dark:text-red-300 uppercase tracking-wider">24h</span>
+              </div>
+            )}
+            
+            <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full border shadow-lg ${
+              station.isActive 
+                ? 'bg-green-100/90 dark:bg-green-900/40 border-green-200/60 dark:border-green-800/60' 
+                : 'bg-gray-100/70 dark:bg-gray-700/50 border-gray-200/60 dark:border-gray-600/60'
+            }`}>
+              {station.isActive ? (
+                <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+              ) : (
+                <XCircle className="w-3 h-3 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400" />
+              )}
+              <span className={`text-xs sm:text-sm font-bold uppercase tracking-wider ${
+                station.isActive 
+                  ? 'text-green-700 dark:text-green-300' 
+                  : 'text-gray-600 dark:text-gray-400'
               }`}>
-                {isPraesidium ? 'Präsidium' : 'Revier'}
+                {station.isActive ? 'Aktiv' : 'Inaktiv'}
               </span>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm mb-4">
-          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            <span className="truncate">{station.address}, {station.city}</span>
+      {/* Content */}
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+        <div className="space-y-4 sm:space-y-5">
+          {/* Address */}
+          <div className="flex items-start gap-3 sm:gap-4">
+            <MapPin className="w-4 h-4 sm:w-6 sm:h-6 text-gray-500 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm sm:text-lg text-gray-900 dark:text-white font-semibold tracking-wide">
+                {station.address}
+              </p>
+              <p className="text-xs sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+                {station.city}
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-            <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            <a 
-              href={`tel:${station.telefon}`} 
-              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate"
-              title={station.telefon}
-            >
-              {station.telefon}
-            </a>
-          </div>
-          {station.email && (
-            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 md:col-span-2">
-              <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+
+          {/* Contact Information */}
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Phone className="w-4 h-4 sm:w-6 sm:h-6 text-gray-500 flex-shrink-0" />
               <a 
-                href={`mailto:${station.email}`} 
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate"
-                title={station.email}
+                href={`tel:${station.telefon}`} 
+                className="text-sm sm:text-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold"
               >
-                {station.email}
+                {station.telefon}
               </a>
             </div>
-          )}
+            
+            {station.email && (
+              <div className="flex items-center gap-3 sm:gap-4">
+                <Mail className="w-4 h-4 sm:w-6 sm:h-6 text-gray-500 flex-shrink-0" />
+                <a 
+                  href={`mailto:${station.email}`} 
+                  className="text-sm sm:text-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate font-semibold"
+                >
+                  {station.email}
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* Type Badge */}
+          <div className="pt-2 sm:pt-3">
+            <span className={`inline-flex items-center px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full text-xs sm:text-base font-bold border shadow-lg ${
+              isPraesidium 
+                ? 'bg-blue-100/90 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200/60 dark:border-blue-800/60' 
+                : 'bg-gray-100/80 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 border-gray-200/60 dark:border-gray-600/60'
+            }`}>
+              {isPraesidium ? 'Polizeipräsidium' : 'Polizeirevier'}
+            </span>
+          </div>
         </div>
 
-        <div className="flex gap-2">
+        {/* Action Buttons */}
+        <div className="flex gap-3 sm:gap-4 mt-6 sm:mt-8 pt-4 sm:pt-5 border-t border-white/50 dark:border-gray-700/50">
           <button
             onClick={handleEdit}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            aria-label={`${station.name} bearbeiten`}
+            className="flex-1 flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 bg-white/20 dark:bg-gray-700/40 hover:bg-white/30 dark:hover:bg-gray-600/40 text-gray-700 dark:text-gray-300 rounded-lg sm:rounded-xl border border-white/40 dark:border-gray-600/50 transition-all duration-300 focus:outline-none focus:ring-3 focus:ring-gray-400/60 shadow-lg hover:shadow-xl text-sm sm:text-base"
           >
-            <Edit2 className="w-4 h-4" />
-            <span className="hidden sm:inline font-medium">Bearbeiten</span>
+            <Edit2 className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="font-bold uppercase tracking-wider">Bearbeiten</span>
           </button>
           <button
             onClick={handleDelete}
-            className="flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            aria-label={`${station.name} löschen`}
+            className="flex items-center justify-center px-3 sm:px-5 py-2.5 sm:py-3 bg-red-100/90 dark:bg-red-900/40 hover:bg-red-200/90 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 rounded-lg sm:rounded-xl border border-red-200/60 dark:border-red-800/60 transition-all duration-300 focus:outline-none focus:ring-3 focus:ring-red-400/60 shadow-lg hover:shadow-xl"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
 
-      {children}
+      {/* Children (Reviere) */}
+      {isExpanded && (
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+          <div className="ml-3 sm:ml-6 md:ml-8 pl-3 sm:pl-6 md:pl-8 border-l-2 sm:border-l-3 border-white/60 dark:border-gray-700/60 space-y-3 sm:space-y-4 mt-4 sm:mt-5">
+            {children}
+          </div>
+        </div>
+      )}
     </div>
   );
 });
 
-StationCard.displayName = 'StationCard'; 
+StationCard.displayName = 'StationCard';

@@ -15,6 +15,9 @@ const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdm
   const { isDarkMode, toggleTheme } = useAppStore();
   const { isAuthenticated, isAdmin, logout, user } = useAuthStore();
 
+  // Debug: Zeige Auth-Status
+  console.log('🔍 Header Auth Status:', { isAuthenticated, isAdmin, user: !!user });
+
   const handleLogout = () => {
     logout();
     onBackToWizard();
@@ -75,16 +78,17 @@ const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdm
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 shadow-md hover:shadow-lg"
+              className="p-2 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-200 shadow-sm"
+              title={isDarkMode ? 'Zum Light Mode wechseln' : 'Zum Dark Mode wechseln'}
             >
               {isDarkMode ? (
-                <Sun className="h-5 w-5" />
+                <Sun className="h-5 w-5 text-yellow-500" />
               ) : (
-                <Moon className="h-5 w-5" />
+                <Moon className="h-5 w-5 text-gray-600" />
               )}
             </motion.button>
 
-            {/* Auth Controls */}
+            {/* Admin Login/User Info */}
             {!isAuthenticated ? (
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -97,21 +101,27 @@ const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdm
               </motion.button>
             ) : (
               <div className="flex items-center space-x-3">
-                {/* User Info - Klickbar für Admin-Dashboard */}
+                {/* Admin Dashboard Button - Nur wenn nicht bereits im Admin-Bereich */}
+                {currentView !== 'admin' && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      console.log('Admin Dashboard Button geklickt');
+                      if (onGoToAdmin) {
+                        onGoToAdmin();
+                      }
+                    }}
+                    className="flex items-center space-x-2 px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 hover:bg-indigo-200 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-xl transition-all duration-200 font-medium"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span className="text-sm">Admin Dashboard</span>
+                  </motion.button>
+                )}
+
+                {/* User Info Badge - Zeigt aktuellen Benutzer */}
                 <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    console.log('Admin-Badge geklickt, onGoToAdmin:', onGoToAdmin);
-                    if (onGoToAdmin) {
-                      onGoToAdmin();
-                    } else if (currentView !== 'admin') {
-                      // Fallback falls onGoToAdmin nicht übergeben wurde
-                      console.log('Fallback: Navigation zum Admin-Dashboard');
-                      window.location.href = '#admin'; // Temporärer Fallback
-                    }
-                  }}
-                  className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-xl cursor-pointer hover:bg-green-200 dark:hover:bg-green-900/50 transition-all duration-200"
+                  className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-xl"
                 >
                   <Settings className="h-4 w-4 text-green-600 dark:text-green-400" />
                   <span className="text-sm font-medium text-green-800 dark:text-green-200">
@@ -124,10 +134,11 @@ const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdm
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200"
+                  className="flex items-center space-x-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 rounded-xl transition-all duration-200 font-medium"
+                  title="Abmelden"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Abmelden</span>
+                  <span className="hidden sm:inline text-sm">Abmelden</span>
                 </motion.button>
               </div>
             )}

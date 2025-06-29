@@ -35,7 +35,6 @@ export interface StationFormData {
 export interface FilterState {
   search: string;
   city: string;
-  type: 'all' | StationType;
   showInactive: boolean;
 }
 

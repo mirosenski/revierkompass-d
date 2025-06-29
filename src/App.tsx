@@ -13,20 +13,32 @@ import TestImport from '@/pages/TestImport';
 function App() {
   const [currentView, setCurrentView] = useState<'wizard' | 'login' | 'admin' | 'test'>('wizard');
   const { isDarkMode, setWizardStep } = useAppStore();
-  const { isAuthenticated, isAdmin } = useAuthStore();
+  const { isAuthenticated, isAdmin, initializeSession } = useAuthStore();
 
-  // Beim Start der Anwendung immer zum Wizard mit Schritt 1 (Adressen-Startseite) navigieren
+  // Session initialisieren beim Start
   useEffect(() => {
+    console.log('🚀 App: Session-Initialisierung startet');
+    initializeSession();
+  }, [initializeSession]);
+
+  // Beim Start der Anwendung prüfen, ob Benutzer bereits angemeldet ist
+  useEffect(() => {
+    console.log('🚀 App: Navigation basierend auf Auth-Status:', { isAuthenticated, isAdmin });
+    
     // Prüfe URL für Test-Seite
     if (window.location.hash === '#test') {
       setCurrentView('test');
       console.log('🚀 Test-Seite aktiviert via URL');
+    } else if (isAuthenticated && isAdmin) {
+      // Wenn bereits angemeldet, direkt zum Admin-Bereich
+      setCurrentView('admin');
+      console.log('🚀 Benutzer bereits angemeldet - Admin-Bereich aktiviert');
     } else {
       setCurrentView('wizard');
       setWizardStep(1);
       console.log('🚀 RevierKompass gestartet - Adressen-Startseite aktiviert');
     }
-  }, [setWizardStep]);
+  }, [setWizardStep, isAuthenticated, isAdmin]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -40,11 +52,21 @@ function App() {
   useEffect(() => {
     if (isAuthenticated && isAdmin && currentView === 'login') {
       setCurrentView('admin');
+      console.log('🔄 Automatische Navigation zum Admin-Bereich nach Anmeldung');
     }
   }, [isAuthenticated, isAdmin, currentView]);
 
   const handleAdminLogin = () => {
-    setCurrentView('login');
+    console.log('🔐 handleAdminLogin aufgerufen:', { isAuthenticated, isAdmin, currentView });
+    
+    // Wenn bereits angemeldet, direkt zum Admin-Bereich
+    if (isAuthenticated && isAdmin) {
+      console.log('🔄 Bereits angemeldet - direkte Navigation zum Admin-Bereich');
+      setCurrentView('admin');
+    } else {
+      console.log('🔄 Navigation zur Anmeldung');
+      setCurrentView('login');
+    }
   };
 
   const handleBackToWizard = () => {
@@ -75,21 +97,20 @@ function App() {
 
   const handleLoginSuccess = () => {
     setCurrentView('admin');
+    console.log('✅ Anmeldung erfolgreich - Navigation zum Admin-Bereich');
   };
 
   const handleGoToAdmin = () => {
-    console.log('handleGoToAdmin aufgerufen, aktueller View:', currentView);
-    if (isAuthenticated && isAdmin) {
-      console.log('Navigation zu Admin-Dashboard');
-      setCurrentView('admin');
-    } else {
-      console.log('Nicht authentifiziert - Navigation zu Login');
-      setCurrentView('login');
-    }
+    console.log('🔐 handleGoToAdmin aufgerufen:', { isAuthenticated, isAdmin, currentView });
+    
+    // Direkt zum Admin-Bereich navigieren
+    console.log('✅ Navigation zu Admin-Dashboard');
+    setCurrentView('admin');
   };
 
   const handleBreadcrumbNavigation = (view: 'wizard' | 'login' | 'admin' | 'test', step?: number) => {
     console.log('Breadcrumb Navigation:', view, step);
+    
     setCurrentView(view);
     
     // Wenn Wizard-Schritt spezifiziert, zum entsprechenden Schritt navigieren
@@ -118,7 +139,7 @@ function App() {
       <main className="flex-1">
         {currentView === 'wizard' && <WizardContainer />}
         {currentView === 'login' && <LoginForm onSuccess={handleLoginSuccess} />}
-        {currentView === 'admin' && isAuthenticated && <AdminDashboard />}
+        {currentView === 'admin' && <AdminDashboard />}
         {currentView === 'test' && <TestImport />}
       </main>
       

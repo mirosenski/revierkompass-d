@@ -327,12 +327,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   
   // Filtering & Sorting
   setSearchQuery: (query) => {
-    set({ searchQuery: query });
+    set({ searchQuery: query || '' });
     get().getFilteredStations();
   },
   
   setCityFilter: (city) => {
-    set({ cityFilter: city });
+    set({ cityFilter: city || '' });
     get().getFilteredStations();
   },
   
@@ -351,9 +351,9 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     
     let filtered = [...allStations];
     
-    // Apply search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+    // Apply search filter - only if searchQuery is not empty
+    if (searchQuery && searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter(station =>
         station.name.toLowerCase().includes(query) ||
         station.city.toLowerCase().includes(query) ||
@@ -361,12 +361,12 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       );
     }
     
-    // Apply city filter
-    if (cityFilter) {
+    // Apply city filter - only if cityFilter is not empty
+    if (cityFilter && cityFilter.trim() !== '') {
       filtered = filtered.filter(station => station.city === cityFilter);
     }
     
-    // Apply type filter
+    // Apply type filter - only if typeFilter is not 'all'
     if (typeFilter !== 'all') {
       filtered = filtered.filter(station => station.type === typeFilter);
     }

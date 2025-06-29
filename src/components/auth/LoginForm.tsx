@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Shield, User, Lock, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
@@ -17,7 +17,15 @@ interface LoginFormData {
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuthStore();
+  const { login, isAuthenticated, isAdmin } = useAuthStore();
+
+  // Wenn bereits angemeldet, automatisch weiterleiten
+  useEffect(() => {
+    if (isAuthenticated && isAdmin) {
+      console.log('✅ Bereits angemeldet - automatische Weiterleitung');
+      onSuccess();
+    }
+  }, [isAuthenticated, isAdmin, onSuccess]);
 
   const {
     register,
@@ -60,6 +68,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           lastLogin: new Date()
         };
 
+        console.log('🔐 LoginForm: Anmeldung erfolgreich, User:', user);
         login(user);
         toast.success('Erfolgreich angemeldet!');
         onSuccess();
@@ -71,6 +80,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         toast.error('Anmeldung fehlgeschlagen');
       }
     } catch (error) {
+      console.error('❌ LoginForm: Fehler bei der Anmeldung:', error);
       toast.error('Ein Fehler ist aufgetreten');
     } finally {
       setIsLoading(false);
@@ -144,6 +154,30 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
             </div>
           </div>
         </motion.div>
+
+        {/* Already Logged In Message */}
+        {isAuthenticated && isAdmin && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="text-sm">
+                <p className="text-green-800 dark:text-green-200 font-medium">Bereits angemeldet!</p>
+                <p className="text-green-700 dark:text-green-300">
+                  Sie werden automatisch zum Admin-Bereich weitergeleitet...
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Login Form */}
         <motion.div

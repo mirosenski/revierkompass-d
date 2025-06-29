@@ -397,19 +397,19 @@ const AdminAddressManagement: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Sticky Header */}
       <div className="sticky top-0 z-40 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <div className="w-full sm:w-auto">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 Adressen verwalten
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
                 {filteredAddresses.length} von {addresses.length} Adressen
               </p>
             </div>
             
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer bg-white/50 dark:bg-gray-700/50 px-3 py-2 rounded-lg">
                 <input
                   type="checkbox"
                   checked={filters.showInactive}
@@ -421,10 +421,10 @@ const AdminAddressManagement: React.FC = () => {
               
               <button
                 onClick={handleCreateAddress}
-                className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-sm sm:text-base font-medium"
               >
-                <Plus className="w-5 h-5" />
-                <span className="font-medium">Neue Adresse</span>
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>Neue Adresse</span>
               </button>
             </div>
           </div>
@@ -432,21 +432,22 @@ const AdminAddressManagement: React.FC = () => {
       </div>
 
       {/* Advanced Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Tab Navigation */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <div className="border-b border-gray-200 dark:border-gray-700">
-            <nav className="-mb-px flex space-x-8">
+            <nav className="-mb-px flex flex-wrap sm:flex-nowrap gap-2 sm:gap-0 sm:space-x-8 overflow-x-auto">
               <button
                 onClick={() => setActiveTab('user')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors whitespace-nowrap ${
                   activeTab === 'user'
                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
                 }`}
               >
                 <Users className="w-4 h-4" />
-                Nutzer-Adressen
+                <span className="hidden sm:inline">Nutzer-Adressen</span>
+                <span className="sm:hidden">Nutzer</span>
                 <span className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-0.5 px-2 rounded-full text-xs">
                   {addresses.filter(addr => !addr.isAnonymous && addr.addressType === 'permanent').length}
                 </span>
@@ -454,14 +455,15 @@ const AdminAddressManagement: React.FC = () => {
               
               <button
                 onClick={() => setActiveTab('station')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors whitespace-nowrap ${
                   activeTab === 'station'
                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
                 }`}
               >
                 <Building2 className="w-4 h-4" />
-                Stationen-Adressen
+                <span className="hidden sm:inline">Stationen-Adressen</span>
+                <span className="sm:hidden">Stationen</span>
                 <span className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-0.5 px-2 rounded-full text-xs">
                   {addresses.filter(addr => addr.parentId && addr.isVerified).length}
                 </span>
@@ -469,14 +471,15 @@ const AdminAddressManagement: React.FC = () => {
               
               <button
                 onClick={() => setActiveTab('temporary')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors whitespace-nowrap ${
                   activeTab === 'temporary'
                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
                 }`}
               >
                 <Clock3 className="w-4 h-4" />
-                Temporäre Adressen
+                <span className="hidden sm:inline">Temporäre Adressen</span>
+                <span className="sm:hidden">Temporär</span>
                 <span className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-0.5 px-2 rounded-full text-xs">
                   {addresses.filter(addr => addr.addressType === 'temporary' || addr.isAnonymous).length}
                 </span>
@@ -497,34 +500,36 @@ const AdminAddressManagement: React.FC = () => {
       </div>
 
       {/* Address Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <input
-            type="checkbox"
-            checked={isAllSelected}
-            ref={el => { if (el) el.indeterminate = isSomeSelected }}
-            onChange={e => handleCheckAll(e.target.checked)}
-            className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 shadow"
-          />
-          <span className="text-sm text-gray-700 dark:text-gray-300 select-none">Alle auswählen</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isAllSelected}
+              ref={el => { if (el) el.indeterminate = isSomeSelected }}
+              onChange={e => handleCheckAll(e.target.checked)}
+              className="w-4 h-4 sm:w-5 sm:h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 shadow"
+            />
+            <span className="text-sm text-gray-700 dark:text-gray-300 select-none">Alle auswählen</span>
+          </div>
           {selectedIds.length > 0 && (
             <button
               onClick={handleDeleteSelected}
-              className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium shadow transition-colors"
+              className="px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium shadow transition-colors text-sm sm:text-base"
             >
               {selectedIds.length === 1 ? 'Ausgewählte Adresse löschen' : `${selectedIds.length} Adressen löschen`}
             </button>
           )}
         </div>
         {addresses.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-4 w-20 h-20 mx-auto mb-4">
-              <MapPin className="w-12 h-12 text-gray-400 mx-auto" />
+          <div className="text-center py-8 sm:py-12">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-3 sm:p-4 w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4">
+              <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
               Keine Adressen gefunden
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 px-4">
               {hasActiveFilters 
                 ? 'Versuchen Sie, die Filter anzupassen oder zu löschen.' 
                 : 'Erstellen Sie Ihre erste Adresse.'}
@@ -532,21 +537,21 @@ const AdminAddressManagement: React.FC = () => {
             {hasActiveFilters ? (
               <button
                 onClick={clearFilters}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-sm sm:text-base"
               >
                 Filter löschen
               </button>
             ) : (
               <button
                 onClick={handleCreateAddress}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm sm:text-base"
               >
                 Erste Adresse erstellen
               </button>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {filteredAddresses.map((address) => (
               <div key={address.id} className="animate-in fade-in-50 duration-200">
                 <AddressCard
