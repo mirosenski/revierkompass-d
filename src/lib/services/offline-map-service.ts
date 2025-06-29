@@ -1,19 +1,32 @@
 import { toast } from 'react-hot-toast';
 import { DEFAULT_ROUTE_PROFILES } from '../../../shared/offline-map/profiles';
+import { Coordinates, RouteResult } from '../store/app-store';
 
-interface NetworkStatus {
-  online: boolean;
-  effectiveType?: string;
-  downlink?: number;
-  rtt?: number;
+// Typ-Definitionen mit erweiterten Details
+export interface OfflineMapConfig {
+  tileServerUrl: string;
+  routingServerUrl: string;
+  geocodingServerUrl: string;
+  dataPath: string;
+  maxCacheSize?: number; // Optionale Cache-Konfiguration
+  tileCacheStrategy?: 'memory' | 'indexeddb' | 'both'; // Erweiterte Cache-Strategien
 }
 
-interface OfflineCapabilities {
-  osrm: boolean;
-  valhalla: boolean;
-  tileserver: boolean;
-  nominatim: boolean;
-  offline_mode: boolean;
+export interface OfflineCapabilities {
+  routing: boolean;
+  geocoding: boolean;
+  tiles: boolean;
+  search: boolean;
+  // Erweiterte Fähigkeiten
+  vectorTiles?: boolean;
+  is3dTerrain?: boolean;
+  pois?: boolean;
+}
+
+export interface NetworkStatus {
+  online: boolean;
+  lastCheck: number;
+  bandwidth?: number; // Optionale Bandbreiten-Schätzung
 }
 
 interface RouteProfile {
@@ -24,6 +37,10 @@ interface RouteProfile {
   description: string;
   icon: string;
   useCase: string;
+  // Erweiterte Profile-Informationen
+  minZoom?: number;
+  maxZoom?: number;
+  restrictions?: string[];
 }
 
 interface RouteRequest {
@@ -31,50 +48,57 @@ interface RouteRequest {
   end: { lat: number; lon: number };
   profile?: string;
   alternatives?: number;
-}
-
-interface RouteResult {
-  trip: {
-    legs: Array<{
-      shape: string;
-      distance: number;
-      time: number;
-      summary: {
-        length: number;
-        time: number;
-      };
-    }>;
-    summary: {
-      length: number;
-      time: number;
-    };
-  };
-  profile?: string;
-  name?: string;
+  // Erweiterte Routing-Optionen
+  avoid?: string[]; // z.B. ['highways', 'tolls']
+  preference?: 'fastest' | 'shortest' | 'eco';
+  departure?: Date; // Für zeitabhängiges Routing
 }
 
 interface MapStyle {
   name: string;
   description: string;
   thumbnail: string;
+  // Erweiterte Style-Informationen
+  minZoom?: number;
+  maxZoom?: number;
+  attribution?: string;
+  is3d?: boolean;
 }
 
+// Hauptklasse mit verbesserten Typen
 export class OfflineMapService {
+  private config: OfflineMapConfig;
+  private capabilities: OfflineCapabilities;
+  private networkStatus: NetworkStatus;
+  private tileCache: Map<string, any>;
+  private searchIndex: Map<string, any>;
   private baseUrl: string;
-  private networkStatus: NetworkStatus = { online: navigator.onLine };
-  private offlineCapabilities: OfflineCapabilities | null = null;
-  private tileCache: Map<string, Blob> = new Map();
   private routeCache: Map<string, RouteResult> = new Map();
   private isInitialized = false;
 
-  constructor(baseUrl: string = '/api/maps') {
-    this.baseUrl = baseUrl;
-    this.initializeNetworkMonitoring();
+  constructor(config: OfflineMapConfig) {
+    this.config = config;
+    this.capabilities = {
+      routing: false,
+      geocoding: false,
+      tiles: false,
+      search: false
+    };
+    this.networkStatus = {
+      online: navigator.onLine,
+      lastCheck: Date.now()
+    };
+    this.tileCache = new Map();
+    this.searchIndex = new Map();
+    this.baseUrl = '/api/maps';
+    
+    this.initializeOfflineCapabilities();
+    this.setupNetworkMonitoring();
     this.loadCachedData();
   }
 
   /**
-   * Initialize the offline map service
+   * Initialisiert den Offline-Kartendienst
    */
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
@@ -91,48 +115,47 @@ export class OfflineMapService {
   }
 
   /**
-   * Check if offline services are available
+   * Prüft, ob Offline-Dienste verfügbar sind
    */
   async checkCapabilities(): Promise<OfflineCapabilities> {
     try {
       const response = await fetch(`${this.baseUrl}/capabilities`);
       const capabilities = await response.json();
-      this.offlineCapabilities = capabilities;
+      this.capabilities = capabilities;
       return capabilities;
     } catch (error) {
       console.error('Failed to check offline capabilities:', error);
-      this.offlineCapabilities = {
-        osrm: false,
-        valhalla: false,
-        tileserver: false,
-        nominatim: false,
-        offline_mode: false
+      this.capabilities = {
+        routing: false,
+        geocoding: false,
+        tiles: false,
+        search: false
       };
-      return this.offlineCapabilities;
+      return this.capabilities;
     }
   }
 
   /**
-   * Get current network status
+   * Gibt den aktuellen Netzwerkstatus zurück
    */
   getNetworkStatus(): NetworkStatus {
     return this.networkStatus;
   }
 
   /**
-   * Check if we're in offline mode
+   * Prüft, ob wir im Offline-Modus sind
    */
   isOfflineMode(): boolean {
-    return !this.networkStatus.online || (this.offlineCapabilities?.offline_mode === true);
+    return !this.networkStatus.online;
   }
 
   /**
-   * Get available map styles
+   * Gibt verfügbare Kartenstile zurück
    */
   async getMapStyles(): Promise<Record<string, MapStyle>> {
     const cacheKey = 'map-styles';
     
-    // Try to use cached version if offline
+    // Versuche, die zwischengespeicherte Version zu verwenden, wenn offline
     if (this.isOfflineMode()) {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
@@ -144,14 +167,14 @@ export class OfflineMapService {
       const response = await fetch(`${this.baseUrl}/styles`);
       const styles = await response.json();
       
-      // Cache for offline use
+      // Für Offline-Caching zwischenspeichern
       localStorage.setItem(cacheKey, JSON.stringify(styles));
       
       return styles;
     } catch (error) {
       console.error('Failed to get map styles:', error);
       
-      // Fallback to cached version
+      // Auf zwischengespeicherte Version zurückgreifen
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
         return JSON.parse(cached);
@@ -162,12 +185,12 @@ export class OfflineMapService {
   }
 
   /**
-   * Get map style configuration
+   * Gibt Kartenstil-Konfiguration zurück
    */
   async getMapStyle(styleId: string): Promise<any> {
     const cacheKey = `map-style-${styleId}`;
     
-    // Try to use cached version if offline
+    // Versuche, die zwischengespeicherte Version zu verwenden, wenn offline
     if (this.isOfflineMode()) {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
@@ -179,19 +202,19 @@ export class OfflineMapService {
       const response = await fetch(`${this.baseUrl}/styles/${styleId}`);
       const style = await response.json();
       
-      // Update URLs to point to our service worker for offline caching
+      // URLs aktualisieren, um auf unseren Service Worker für Offline-Caching zu verweisen
       if ('serviceWorker' in navigator) {
         style.sources = this.updateSourceUrlsForOffline(style.sources);
       }
       
-      // Cache for offline use
+      // Für Offline-Caching zwischenspeichern
       localStorage.setItem(cacheKey, JSON.stringify(style));
       
       return style;
     } catch (error) {
       console.error('Failed to get map style:', error);
       
-      // Fallback to cached version
+      // Auf zwischengespeicherte Version zurückgreifen
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
         return JSON.parse(cached);
@@ -202,12 +225,12 @@ export class OfflineMapService {
   }
 
   /**
-   * Calculate route using offline or online services
+   * Berechnet Route mit Offline- oder Online-Diensten
    */
   async calculateRoute(request: RouteRequest): Promise<RouteResult> {
     const cacheKey = `route-${JSON.stringify(request)}`;
     
-    // Check cache first
+    // Zuerst Cache prüfen
     if (this.routeCache.has(cacheKey)) {
       return this.routeCache.get(cacheKey)!;
     }
@@ -227,14 +250,14 @@ export class OfflineMapService {
 
       const route = await response.json();
       
-      // Cache the result
+      // Ergebnis zwischenspeichern
       this.routeCache.set(cacheKey, route);
       
       return route;
     } catch (error) {
       console.error('Route calculation error:', error);
       
-      // Try to use fallback routing if available
+      // Versuchen, Fallback-Routing zu verwenden, wenn verfügbar
       if (this.isOfflineMode()) {
         return this.calculateFallbackRoute(request);
       }
@@ -244,7 +267,7 @@ export class OfflineMapService {
   }
 
   /**
-   * Get multiple route alternatives
+   * Berechnet mehrere Routenalternativen
    */
   async calculateAlternativeRoutes(
     start: { lat: number; lon: number },
@@ -268,19 +291,19 @@ export class OfflineMapService {
     } catch (error) {
       console.error('Alternative routes calculation error:', error);
       
-      // Fallback to single route if alternatives fail
+      // Bei Fehlschlag auf einzelne Route zurückgreifen
       const mainRoute = await this.calculateRoute({ start, end });
       return [mainRoute];
     }
   }
 
   /**
-   * Get available routing profiles
+   * Gibt verfügbare Routing-Profile zurück
    */
   async getRoutingProfiles(): Promise<RouteProfile[]> {
     const cacheKey = 'routing-profiles';
     
-    // Try to use cached version if offline
+    // Versuche, die zwischengespeicherte Version zu verwenden, wenn offline
     if (this.isOfflineMode()) {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
@@ -292,14 +315,14 @@ export class OfflineMapService {
       const response = await fetch(`${this.baseUrl}/profiles`);
       const profiles = await response.json();
       
-      // Cache for offline use
+      // Für Offline-Caching zwischenspeichern
       localStorage.setItem(cacheKey, JSON.stringify(profiles));
       
       return profiles;
     } catch (error) {
       console.error('Failed to get routing profiles:', error);
       
-      // Fallback to cached version or default profiles
+      // Auf zwischengespeicherte Version oder Standard-Profile zurückgreifen
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
         return JSON.parse(cached);
@@ -310,7 +333,7 @@ export class OfflineMapService {
   }
 
   /**
-   * Geocode address using offline Nominatim
+   * Geocodiert Adresse mit Offline Nominatim
    */
   async geocodeAddress(query: string): Promise<Array<{
     lat: number;
@@ -321,7 +344,7 @@ export class OfflineMapService {
   }>> {
     const cacheKey = `geocode-${query}`;
     
-    // Check cache first
+    // Zuerst Cache prüfen
     const cached = localStorage.getItem(cacheKey);
     if (cached && this.isOfflineMode()) {
       return JSON.parse(cached);
@@ -331,14 +354,14 @@ export class OfflineMapService {
       const response = await fetch(`${this.baseUrl}/geocode?q=${encodeURIComponent(query)}`);
       const results = await response.json();
       
-      // Cache results
+      // Ergebnisse zwischenspeichern
       localStorage.setItem(cacheKey, JSON.stringify(results));
       
       return results;
     } catch (error) {
       console.error('Geocoding error:', error);
       
-      // Try cached version
+      // Auf zwischengespeicherte Version zurückgreifen
       if (cached) {
         return JSON.parse(cached);
       }
@@ -348,7 +371,7 @@ export class OfflineMapService {
   }
 
   /**
-   * Get NBAN (special zones) data
+   * Ruft NBAN-Daten (spezielle Zonen) ab
    */
   async getNBANData(bounds?: {
     north: number;
@@ -370,7 +393,7 @@ export class OfflineMapService {
     } catch (error) {
       console.error('NBAN data error:', error);
       
-      // Return empty feature collection if offline
+      // Leere Feature-Collection zurückgeben, wenn offline
       return {
         type: 'FeatureCollection',
         features: []
@@ -379,7 +402,7 @@ export class OfflineMapService {
   }
 
   /**
-   * Preload tiles for offline use
+   * Lädt Kacheln für Offline-Nutzung vor
    */
   async preloadTiles(
     style: string,
@@ -419,17 +442,17 @@ export class OfflineMapService {
   }
 
   /**
-   * Clear offline cache
+   * Löscht Offline-Cache
    */
   async clearOfflineCache(): Promise<void> {
     try {
-      // Clear tile cache
+      // Kachel-Cache löschen
       this.tileCache.clear();
       
-      // Clear route cache
+      // Routen-Cache löschen
       this.routeCache.clear();
       
-      // Clear localStorage cache
+      // localStorage-Cache löschen
       const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -439,7 +462,7 @@ export class OfflineMapService {
       }
       keysToRemove.forEach(key => localStorage.removeItem(key));
       
-      // Clear service worker cache
+      // Service Worker Cache löschen
       if ('serviceWorker' in navigator && 'caches' in window) {
         const cacheNames = await caches.keys();
         await Promise.all(
@@ -456,51 +479,50 @@ export class OfflineMapService {
     }
   }
 
-  // Private methods
+  // Private Methoden
 
-  private initializeNetworkMonitoring(): void {
-    // Monitor online/offline status
+  private async initializeOfflineCapabilities(): Promise<void> {
+    try {
+      // Routing-Fähigkeit prüfen
+      const routingResponse = await fetch(`${this.config.routingServerUrl}/route/v1/driving/9.18,48.78;9.19,48.79`, {
+        signal: AbortSignal.timeout(3000)
+      });
+      this.capabilities.routing = routingResponse.ok;
+
+      // Geocoding-Fähigkeit prüfen
+      const geocodingResponse = await fetch(`${this.config.geocodingServerUrl}/search?q=Stuttgart&format=json&limit=1`, {
+        signal: AbortSignal.timeout(3000)
+      });
+      this.capabilities.geocoding = geocodingResponse.ok;
+
+      // Tile-Server prüfen
+      const tileResponse = await fetch(`${this.config.tileServerUrl}/styles/streets/0/0/0.png`, {
+        signal: AbortSignal.timeout(3000)
+      });
+      this.capabilities.tiles = tileResponse.ok;
+
+      console.log('🗺️ Offline-Capabilities:', this.capabilities);
+    } catch (error) {
+      console.warn('Offline-Capabilities konnten nicht initialisiert werden:', error);
+    }
+  }
+
+  private setupNetworkMonitoring(): void {
     window.addEventListener('online', () => {
       this.networkStatus.online = true;
-      toast.success('Internetverbindung wieder hergestellt');
-      this.checkCapabilities();
+      this.networkStatus.lastCheck = Date.now();
+      console.log('🌐 Online-Modus aktiviert');
     });
 
     window.addEventListener('offline', () => {
       this.networkStatus.online = false;
-      toast('Offline-Modus aktiviert', { icon: '📡' });
+      this.networkStatus.lastCheck = Date.now();
+      console.log('📴 Offline-Modus aktiviert');
     });
-
-    // Monitor connection quality if available
-    if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
-      const updateNetworkInfo = () => {
-        this.networkStatus = {
-          online: navigator.onLine,
-          effectiveType: connection.effectiveType,
-          downlink: connection.downlink,
-          rtt: connection.rtt
-        };
-      };
-
-      connection.addEventListener('change', updateNetworkInfo);
-      updateNetworkInfo();
-    }
-  }
-
-  private async registerServiceWorker(): Promise<void> {
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw-maps.js');
-        console.log('Maps Service Worker registered:', registration);
-      } catch (error) {
-        console.warn('Maps Service Worker registration failed:', error);
-      }
-    }
   }
 
   private loadCachedData(): void {
-    // Load any cached data that needs to be available immediately
+    // Zwischengespeicherte Daten laden, die sofort verfügbar sein müssen
     try {
       const cachedRoutes = localStorage.getItem('cached-routes');
       if (cachedRoutes) {
@@ -520,7 +542,7 @@ export class OfflineMapService {
     Object.keys(updatedSources).forEach(sourceId => {
       const source = updatedSources[sourceId];
       if (source.url && source.url.startsWith('/api/tiles/')) {
-        // URLs are already configured for our backend
+        // URLs sind bereits für unseren Backend konfiguriert
         return;
       }
       
@@ -538,40 +560,42 @@ export class OfflineMapService {
   }
 
   private async calculateFallbackRoute(request: RouteRequest): Promise<RouteResult> {
-    // Simple straight-line distance calculation as fallback
+    // Einfache Luftlinienentfernung als Fallback
     const distance = this.calculateDistance(request.start, request.end);
-    const estimatedTime = distance / 50; // Assume 50 km/h average speed
+    const estimatedTime = distance / 50; // Annahme: 50 km/h Durchschnittsgeschwindigkeit
     
     return {
-      trip: {
-        legs: [{
-          shape: `${request.start.lat},${request.start.lon};${request.end.lat},${request.end.lon}`,
-          distance,
-          time: estimatedTime,
-          summary: {
-            length: distance,
-            time: estimatedTime
-          }
-        }],
-        summary: {
-          length: distance,
-          time: estimatedTime
-        }
-      }
+      id: `fallback-${Date.now()}`,
+      destinationId: 'fallback',
+      destinationName: 'Fallback-Route',
+      destinationType: 'custom',
+      address: 'Berechnet ohne Online-Verbindung',
+      distance: distance / 1000, // in km
+      duration: Math.round(estimatedTime * 60), // in minutes
+      estimatedFuel: (distance / 1000) * 0.095,
+      estimatedCost: (distance / 1000) * 0.095 * 1.75,
+      routeType: 'Schnellste',
+      coordinates: { lat: request.end.lat, lng: request.end.lon },
+      color: '#3b82f6', // Standardfarbe
+      route: {
+        coordinates: [[request.start.lon, request.start.lat], [request.end.lon, request.end.lat]],
+        distance: distance * 1000, // in meters
+        duration: estimatedTime * 60 // in seconds
+      },
+      provider: 'Direct'
     };
   }
 
   private calculateDistance(start: { lat: number; lon: number }, end: { lat: number; lon: number }): number {
-    const R = 6371; // Earth's radius in km
+    const R = 6371; // Erdradius in km
     const dLat = (end.lat - start.lat) * Math.PI / 180;
     const dLon = (end.lon - start.lon) * Math.PI / 180;
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
               Math.cos(start.lat * Math.PI / 180) * Math.cos(end.lat * Math.PI / 180) *
               Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+    return R * c * 1000; // in meters
   }
-
 
   private calculateTileList(
     bounds: { north: number; south: number; east: number; west: number },
@@ -598,7 +622,7 @@ export class OfflineMapService {
     const latRad = lat * Math.PI / 180;
     const n = Math.pow(2, zoom);
     const x = Math.floor((lon + 180) / 360 * n);
-    const y = Math.floor((1 - Math.asinh(Math.tan(latRad)) / Math.PI) / 2 * n);
+    const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n);
     return { x, y };
   }
 
@@ -616,7 +640,352 @@ export class OfflineMapService {
       throw new Error(`Failed to preload tile: ${error}`);
     }
   }
+
+  // Offline-Routing mit lokaler OSRM-Instanz
+  async calculateOfflineRoute(
+    start: Coordinates,
+    end: Coordinates,
+    profile: string = 'driving'
+  ): Promise<RouteResult | null> {
+    if (!this.capabilities.routing) {
+      console.warn('Offline-Routing nicht verfügbar');
+      return null;
+    }
+
+    try {
+      const url = `${this.config.routingServerUrl}/route/v1/${profile}/${start.lng},${start.lat};${end.lng},${end.lat}`;
+      const params = new URLSearchParams({
+        overview: 'full',
+        geometries: 'geojson',
+        steps: 'true'
+      });
+
+      const response = await fetch(`${url}?${params}`, {
+        signal: AbortSignal.timeout(10000)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Offline-Routing Fehler: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return this.parseOfflineRouteResponse(data, start, end);
+    } catch (error) {
+      console.error('Offline-Routing fehlgeschlagen:', error);
+      return null;
+    }
+  }
+
+  private parseOfflineRouteResponse(data: any, start: Coordinates, end: Coordinates): RouteResult {
+    if (!data.routes || data.routes.length === 0) {
+      throw new Error('Keine Route gefunden');
+    }
+
+    const route = data.routes[0];
+    const coordinates = route.geometry.coordinates.map((coord: number[]) => [coord[0], coord[1]]);
+
+    return {
+      id: `offline-${Date.now()}`,
+      destinationId: 'offline',
+      destinationName: 'Offline-Route',
+      destinationType: 'custom',
+      address: 'Offline berechnet',
+      distance: route.distance / 1000,
+      duration: Math.round(route.duration / 60),
+      estimatedFuel: (route.distance / 1000) * 0.095,
+      estimatedCost: (route.distance / 1000) * 0.095 * 1.75,
+      routeType: 'Schnellste',
+      coordinates: end,
+      color: '#3b82f6',
+      route: {
+        coordinates,
+        distance: route.distance,
+        duration: route.duration
+      },
+      provider: 'Offline-OSRM'
+    };
+  }
+
+  // Offline-Geocoding mit lokaler Nominatim-Instanz
+  async geocodeOfflineAddress(query: string): Promise<Array<{
+    lat: number;
+    lng: number;
+    display_name: string;
+    importance: number;
+  }>> {
+    if (!this.capabilities.geocoding) {
+      console.warn('Offline-Geocoding nicht verfügbar');
+      return [];
+    }
+
+    try {
+      const params = new URLSearchParams({
+        q: query,
+        format: 'json',
+        limit: '5',
+        countrycodes: 'de',
+        bounded: '1',
+        viewbox: '7.5,47.5,10.5,50.0' // Baden-Württemberg
+      });
+
+      const response = await fetch(`${this.config.geocodingServerUrl}/search?${params}`, {
+        signal: AbortSignal.timeout(8000)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Offline-Geocoding Fehler: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((result: any) => ({
+        lat: parseFloat(result.lat),
+        lng: parseFloat(result.lon),
+        display_name: result.display_name,
+        importance: result.importance || 0.5
+      }));
+    } catch (error) {
+      console.error('Offline-Geocoding fehlgeschlagen:', error);
+      return [];
+    }
+  }
+
+  // Offline-Kartenstile laden
+  async getOfflineMapStyle(styleName: string): Promise<any> {
+    const styleMap: Record<string, string> = {
+      'streets': '/styles/offline-streets.json',
+      'satellite': '/styles/offline-satellite.json',
+      'terrain': '/styles/offline-terrain.json',
+      'police': '/styles/offline-police.json'
+    };
+
+    const stylePath = styleMap[styleName] || styleMap.streets;
+
+    try {
+      const response = await fetch(stylePath);
+      if (!response.ok) {
+        throw new Error(`Style nicht gefunden: ${stylePath}`);
+      }
+
+      const style = await response.json();
+      
+      // Tile-URLs auf lokalen Server umleiten
+      if (this.capabilities.tiles) {
+        this.replaceTileUrls(style);
+      }
+
+      return style;
+    } catch (error) {
+      console.error('Offline-Style konnte nicht geladen werden:', error);
+      return this.getDefaultStyle();
+    }
+  }
+
+  private replaceTileUrls(style: any): void {
+    if (style.sources) {
+      Object.keys(style.sources).forEach(sourceKey => {
+        const source = style.sources[sourceKey];
+        if (source.url && source.url.includes('maptiler.com')) {
+          source.url = `${this.config.tileServerUrl}/styles/${sourceKey}/tiles.json`;
+        }
+        if (source.tiles) {
+          source.tiles = source.tiles.map((tile: string) => 
+            tile.replace(/https:\/\/api\.maptiler\.com/, this.config.tileServerUrl)
+          );
+        }
+      });
+    }
+  }
+
+  private getDefaultStyle(): any {
+    return {
+      version: 8,
+      sources: {
+        'osm': {
+          type: 'raster',
+          tiles: [`${this.config.tileServerUrl}/tile/{z}/{x}/{y}.png`],
+          tileSize: 256
+        }
+      },
+      layers: [
+        {
+          id: 'osm',
+          type: 'raster',
+          source: 'osm',
+          minzoom: 0,
+          maxzoom: 18
+        }
+      ]
+    };
+  }
+
+  // Offline-Suche mit lokalem Index
+  async searchOffline(query: string): Promise<Array<{
+    id: string;
+    name: string;
+    address: string;
+    coordinates: Coordinates;
+    type: 'station' | 'address' | 'poi';
+  }>> {
+    if (!this.capabilities.search) {
+      return [];
+    }
+
+    const results: Array<{
+      id: string;
+      name: string;
+      address: string;
+      coordinates: Coordinates;
+      type: 'station' | 'address' | 'poi';
+    }> = [];
+
+    // Lokalen Suchindex durchsuchen
+    for (const [key, item] of this.searchIndex) {
+      if (key.toLowerCase().includes(query.toLowerCase()) ||
+          item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.address.toLowerCase().includes(query.toLowerCase())) {
+        results.push(item);
+      }
+    }
+
+    return results.slice(0, 10); // Maximal 10 Ergebnisse
+  }
+
+  // Suchindex laden
+  async loadSearchIndex(): Promise<void> {
+    try {
+      const response = await fetch('/data/search-index.json');
+      if (response.ok) {
+        const data = await response.json();
+        this.searchIndex.clear();
+        
+        data.forEach((item: any) => {
+          this.searchIndex.set(item.id, item);
+          this.searchIndex.set(item.name, item);
+          this.searchIndex.set(item.address, item);
+        });
+
+        this.capabilities.search = true;
+        console.log('🔍 Suchindex geladen:', this.searchIndex.size, 'Einträge');
+      }
+    } catch (error) {
+      console.warn('Suchindex konnte nicht geladen werden:', error);
+    }
+  }
+
+  // Tile-Caching
+  async cacheTile(z: number, x: number, y: number, tileData: ArrayBuffer): Promise<void> {
+    const key = `${z}/${x}/${y}`;
+    this.tileCache.set(key, {
+      data: tileData,
+      timestamp: Date.now()
+    });
+
+    // Cache-Größe begrenzen
+    if (this.tileCache.size > (this.config.maxCacheSize || 1000)) {
+      const oldestKey = this.tileCache.keys().next().value;
+      this.tileCache.delete(oldestKey);
+    }
+  }
+
+  async getCachedTile(z: number, x: number, y: number): Promise<ArrayBuffer | null> {
+    const key = `${z}/${x}/${y}`;
+    const cached = this.tileCache.get(key);
+    
+    if (cached && Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) {
+      return cached.data;
+    }
+    
+    return null;
+  }
+
+  // Status-Informationen
+  getCapabilities(): OfflineCapabilities {
+    return { ...this.capabilities };
+  }
+
+  // Offline-Daten vorbereiten
+  async prepareOfflineData(area: {
+    bounds: [number, number, number, number]; // [minLng, minLat, maxLng, maxLat]
+    zoomLevels: number[];
+  }): Promise<void> {
+    console.log('📦 Offline-Daten werden vorbereitet...');
+    
+    const { bounds, zoomLevels } = area;
+    const [minLng, minLat, maxLng, maxLat] = bounds;
+
+    for (const zoom of zoomLevels) {
+      const tiles = this.getTilesForBounds(minLng, minLat, maxLng, maxLat, zoom);
+      
+      for (const [x, y] of tiles) {
+        try {
+          const tileUrl = `${this.config.tileServerUrl}/tile/${zoom}/${x}/${y}.png`;
+          const response = await fetch(tileUrl);
+          
+          if (response.ok) {
+            const tileData = await response.arrayBuffer();
+            await this.cacheTile(zoom, x, y, tileData);
+          }
+        } catch (error) {
+          console.warn(`Tile ${zoom}/${x}/${y} konnte nicht geladen werden:`, error);
+        }
+      }
+    }
+
+    console.log('✅ Offline-Daten vorbereitet');
+  }
+
+  private getTilesForBounds(
+    minLng: number,
+    minLat: number,
+    maxLng: number,
+    maxLat: number,
+    zoom: number
+  ): Array<[number, number]> {
+    const tiles: Array<[number, number]> = [];
+    
+    const minTile = this.lngLatToTile(minLng, minLat, zoom);
+    const maxTile = this.lngLatToTile(maxLng, maxLat, zoom);
+    
+    for (let x = minTile.x; x <= maxTile.x; x++) {
+      for (let y = maxTile.y; y <= minTile.y; y++) {
+        tiles.push([x, y]);
+      }
+    }
+    
+    return tiles;
+  }
+
+  private lngLatToTile(lng: number, lat: number, zoom: number): { x: number; y: number } {
+    const n = Math.pow(2, zoom);
+    const x = Math.floor((lng + 180) / 360 * n);
+    const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n);
+    return { x, y };
+  }
+
+  /**
+   * Registriert den Service Worker für Offline-Funktionalität
+   */
+  private async registerServiceWorker(): Promise<void> {
+    if ('serviceWorker' in navigator) {
+      try {
+        await navigator.serviceWorker.register('/service-worker.js');
+        console.log('Service Worker erfolgreich registriert');
+      } catch (error) {
+        console.warn('Service Worker konnte nicht registriert werden:', error);
+      }
+    }
+  }
 }
 
-// Create singleton instance
-export const offlineMapService = new OfflineMapService();
+// Standard-Konfiguration
+export const defaultOfflineConfig: OfflineMapConfig = {
+  tileServerUrl: 'http://localhost:8080',
+  routingServerUrl: 'http://localhost:5000',
+  geocodingServerUrl: 'http://localhost:7070',
+  dataPath: '/data',
+  maxCacheSize: 2000, // Erhöhte Cache-Kapazität
+  tileCacheStrategy: 'both' // Memory + IndexedDB
+};
+
+// Singleton-Instanz
+export const offlineMapService = new OfflineMapService(defaultOfflineConfig);

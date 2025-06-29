@@ -1,0 +1,21 @@
+{
+  "name": "revierkompass-api-server",
+  "version": "1.0.0",
+  "description": "API-Server für Revierkompass Offline-Services",
+  "main": "api-server.js",
+  "scripts": {
+    "start": "node api-server.js",
+    "dev": "nodemon api-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "http-proxy-middleware": "^2.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["maps", "routing", "offline", "api"],
+  "author": "Revierkompass Team",
+  "license": "MIT"
+} 

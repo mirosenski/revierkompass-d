@@ -3,329 +3,608 @@ import { Coordinates, Address, RouteResult, Station, CustomAddress } from '../st
 export interface RouteRequest {
   start: Coordinates;
   end: Coordinates;
+  profile?: 'driving' | 'walking' | 'cycling' | 'police';
 }
 
 export interface RouteResponse {
   coordinates: [number, number][];
   distance: number; // in meters
   duration: number; // in seconds
+  steps?: RouteStep[];
+  traffic?: TrafficInfo;
+}
+
+export interface RouteStep {
+  instruction: string;
+  distance: number;
+  duration: number;
+  coordinates: [number, number][];
+}
+
+export interface TrafficInfo {
+  congestion: 'low' | 'medium' | 'high';
+  delay: number; // in seconds
+}
+
+// Korrektur für Valhalla-Response
+interface ValhallaLeg {
+  summary: {
+    length: number; // in km
+    time: number; // in minutes
+  };
+  shape: string; // encoded polyline
+}
+
+// Cache-Eintrag Interface
+interface CacheEntry {
+  data: RouteResponse;
+  timestamp: number;
+}
+
+// Metrics Interface
+interface RoutingMetrics {
+  provider: string;
+  success: boolean;
+  duration: number;
+  error?: string;
 }
 
 class RoutingService {
-  // Verbesserte API-URLs mit Fallback-Optionen
-  private readonly OSRM_BASE_URL = 'https://router.project-osrm.org/route/v1/driving';
-  private readonly VALHALLA_BASE_URL = 'https://valhalla1.openstreetmap.de/route';
-  private readonly GRAPHHOPPER_BASE_URL = 'https://graphhopper.com/api/1/route';
-
-  // Simple in-memory cache for previously calculated routes
-  private readonly routeCache: Map<string, RouteResponse> = new Map();
-  private readonly MAX_CACHE_SIZE = 100;
-
-  private buildOSRMUrl(start: Coordinates, end: Coordinates, baseUrl?: string): string {
-    if (baseUrl) {
-      return `${baseUrl}/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
+  // Erweiterte API-URLs mit Prioritätsreihenfolge
+  private readonly ROUTING_PROVIDERS = [
+    {
+      name: 'OSRM-Main',
+      url: 'https://router.project-osrm.org/route/v1',
+      priority: 1
+    },
+    {
+      name: 'OSRM-Alt',
+      url: 'https://osrm.router.place/route/v1',
+      priority: 2
+    },
+    {
+      name: 'OSRM-DE',
+      url: 'https://routing.openstreetmap.de/routed-car/route/v1',
+      priority: 3
+    },
+    {
+      name: 'Valhalla',
+      url: 'https://valhalla1.openstreetmap.de',
+      priority: 4
+    },
+    {
+      name: 'GraphHopper',
+      url: 'https://graphhopper.com/api/1',
+      priority: 5
     }
-    return `http://localhost:3000/route/${start.lng}/${start.lat}/${end.lng}/${end.lat}`;
-  }
-  
-  // Alternative OSRM-Instanzen für Fallback
-  private readonly OSRM_FALLBACK_URLS = [
-    'https://router.project-osrm.org/route/v1/driving',
-    'https://osrm.router.place/route/v1/driving',
-    'https://routing.openstreetmap.de/routed-car/route/v1/driving'
   ];
 
-  // Calculate multiple routes from start address to selected destinations
+  // Erweiterte Cache-Strategie
+  private readonly routeCache: Map<string, CacheEntry> = new Map();
+  private readonly MAX_CACHE_SIZE = 200;
+  private readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 Stunden
+
+  // Offline-Routing mit OSRM-Daten
+  private readonly OFFLINE_ROUTING_URL = 'http://localhost:5000'; // Lokaler OSRM-Server
+  private offlineRoutingAvailable = false;
+
+  // Metrics für Performance-Tracking
+  private readonly metrics: RoutingMetrics[] = [];
+
+  // Standard-Headers für alle API-Calls
+  private readonly DEFAULT_HEADERS = {
+    'Accept': 'application/json',
+    'User-Agent': 'Revierkompass/1.0'
+  };
+
+  constructor() {
+    this.checkOfflineRouting();
+  }
+
+  // Verbesserte Offline-Routing-Prüfung
+  private async checkOfflineRouting(): Promise<void> {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      
+      const response = await fetch(`${this.OFFLINE_ROUTING_URL}/status`, {
+        signal: controller.signal,
+        headers: this.DEFAULT_HEADERS
+      });
+      
+      clearTimeout(timeout);
+      this.offlineRoutingAvailable = response.ok;
+      console.log('🗺️ Offline-Routing verfügbar:', this.offlineRoutingAvailable);
+    } catch (error) {
+      console.log('🗺️ Offline-Routing nicht verfügbar:', error);
+      this.offlineRoutingAvailable = false;
+    }
+  }
+
+  // Verbesserte Routenberechnung mit mehreren Profilen
   async calculateMultipleRoutes(
     startAddress: Address,
     selectedStationIds: string[],
     selectedCustomAddressIds: string[],
     allStations: Station[],
-    customAddresses: CustomAddress[]
+    customAddresses: CustomAddress[],
+    routingProfile: 'fastest' | 'shortest' | 'eco' = 'fastest'
   ): Promise<RouteResult[]> {
     const results: RouteResult[] = [];
+    const batchSize = 5; // Parallel-Berechnung in Batches
     
-    // Calculate routes to selected stations
-    for (const stationId of selectedStationIds) {
-      const station = allStations.find(s => s.id === stationId);
-      if (!station) continue;
+    // Alle Ziele sammeln
+    const destinations = [
+      ...selectedStationIds.map(id => ({ id, type: 'station' as const })),
+      ...selectedCustomAddressIds.map(id => ({ id, type: 'custom' as const }))
+    ];
 
-      try {
-        const route = await this.calculateSingleRoute(
-          startAddress.coordinates,
-          station.coordinates
-        );
+    // Batch-weise verarbeiten für bessere Performance
+    for (let i = 0; i < destinations.length; i += batchSize) {
+      const batch = destinations.slice(i, i + batchSize);
+      const batchPromises = batch.map(async ({ id, type }) => {
+        const destination = type === 'station' 
+          ? allStations.find(s => s.id === id)
+          : customAddresses.find(a => a.id === id);
 
-        if (route) {
-          results.push({
-            id: `station-${station.id}`,
-            destinationId: station.id,
-            destinationName: station.name,
-            destinationType: 'station',
-            address: station.address,
-            distance: route.distance / 1000, // Convert to km
-            duration: Math.round(route.duration / 60), // Convert to minutes
-            estimatedFuel: (route.distance / 1000) * 0.095, // 9.5L/100km
-            estimatedCost: (route.distance / 1000) * 0.095 * 1.75, // 1.75€/L
-            routeType: 'Schnellste',
-            coordinates: station.coordinates,
-            color: this.generateRouteColor(results.length),
-            route: {
-              coordinates: route.coordinates,
-              distance: route.distance,
-              duration: route.duration
-            },
-            provider: 'OSRM'
-          });
+        if (!destination) return null;
+
+        try {
+          const route = await this.calculateSingleRoute(
+            startAddress.coordinates,
+            destination.coordinates,
+            { profile: this.mapProfileToProvider(routingProfile) }
+          );
+
+          if (route) {
+            return {
+              id: `${type}-${destination.id}`,
+              destinationId: destination.id,
+              destinationName: destination.name,
+              destinationType: type,
+              address: destination.address,
+              distance: route.distance / 1000,
+              duration: Math.round(route.duration / 60),
+              estimatedFuel: this.calculateFuelConsumption(route.distance / 1000, routingProfile),
+              estimatedCost: this.calculateCost(route.distance / 1000, routingProfile),
+              routeType: this.mapProfileToRouteType(routingProfile),
+              coordinates: destination.coordinates,
+              color: this.generateRouteColor(results.length),
+              route: {
+                coordinates: route.coordinates,
+                distance: route.distance,
+                duration: route.duration
+              },
+              provider: route.provider || 'OSRM',
+              stationType: type === 'station' ? (destination as any).type : undefined
+            };
+          }
+        } catch (error) {
+          console.error(`Fehler bei Routenberechnung zu ${destination.name}:`, error);
+          this.trackRoutingError('Batch-Processing', error);
+          return this.createFallbackRoute(startAddress, destination, type);
         }
-      } catch (error) {
-        console.error(`Error calculating route to station ${station.name}:`, error);
-        
-        // Fallback to direct distance calculation
-        const directDistance = this.calculateDirectDistance(
-          startAddress.coordinates,
-          station.coordinates
-        );
-        
-        results.push({
-          id: `station-${station.id}`,
-          destinationId: station.id,
-          destinationName: station.name,
-          destinationType: 'station',
-          address: station.address,
-          distance: directDistance,
-          duration: Math.round(directDistance * 2), // Rough estimate: 2 minutes per km
-          estimatedFuel: directDistance * 0.095,
-          estimatedCost: directDistance * 0.095 * 1.75,
-          routeType: 'Kürzeste',
-          coordinates: station.coordinates,
-          color: this.generateRouteColor(results.length),
-          route: {
-            coordinates: [
-              [startAddress.coordinates.lng, startAddress.coordinates.lat],
-              [station.coordinates.lng, station.coordinates.lat]
-            ],
-            distance: directDistance * 1000,
-            duration: directDistance * 120
-          },
-          provider: 'Direct'
-        });
-      }
-    }
+      });
 
-    // Calculate routes to selected custom addresses
-    for (const addressId of selectedCustomAddressIds) {
-      const customAddress = customAddresses.find(a => a.id === addressId);
-      if (!customAddress || !customAddress.coordinates) continue;
-
-      try {
-        const route = await this.calculateSingleRoute(
-          startAddress.coordinates,
-          customAddress.coordinates
-        );
-
-        if (route) {
-          results.push({
-            id: `custom-${customAddress.id}`,
-            destinationId: customAddress.id,
-            destinationName: customAddress.name,
-            destinationType: 'custom',
-            address: customAddress.address,
-            distance: route.distance / 1000, // Convert to km
-            duration: Math.round(route.duration / 60), // Convert to minutes
-            estimatedFuel: (route.distance / 1000) * 0.095,
-            estimatedCost: (route.distance / 1000) * 0.095 * 1.75,
-            routeType: 'Schnellste',
-            coordinates: customAddress.coordinates,
-            color: this.generateRouteColor(results.length),
-            route: {
-              coordinates: route.coordinates,
-              distance: route.distance,
-              duration: route.duration
-            },
-            provider: 'OSRM'
-          });
-        }
-      } catch (error) {
-        console.error(`Error calculating route to custom address ${customAddress.name}:`, error);
-        
-        // Fallback to direct distance calculation
-        const directDistance = this.calculateDirectDistance(
-          startAddress.coordinates,
-          customAddress.coordinates
-        );
-        
-        results.push({
-          id: `custom-${customAddress.id}`,
-          destinationId: customAddress.id,
-          destinationName: customAddress.name,
-          destinationType: 'custom',
-          address: customAddress.address,
-          distance: directDistance,
-          duration: Math.round(directDistance * 2), // Rough estimate: 2 minutes per km
-          estimatedFuel: directDistance * 0.095,
-          estimatedCost: directDistance * 0.095 * 1.75,
-          routeType: 'Kürzeste',
-          coordinates: customAddress.coordinates,
-          color: this.generateRouteColor(results.length),
-          route: {
-            coordinates: [
-              [startAddress.coordinates.lng, startAddress.coordinates.lat],
-              [customAddress.coordinates.lng, customAddress.coordinates.lat]
-            ],
-            distance: directDistance * 1000,
-            duration: directDistance * 120
-          },
-          provider: 'Direct'
-        });
-      }
+      const batchResults = await Promise.all(batchPromises);
+      results.push(...batchResults.filter(Boolean) as RouteResult[]);
     }
 
     return results.sort((a, b) => a.distance - b.distance);
   }
 
-  // Calculate single route between two points
+  // Verbesserte Einzelroutenberechnung mit Fallback-Kette
   async calculateSingleRoute(
     start: Coordinates,
-    end: Coordinates
-  ): Promise<RouteResponse> {
-    const cacheKey = `${start.lng}-${start.lat}-${end.lng}-${end.lat}`;
+    end: Coordinates,
+    options: { profile?: string } = {}
+  ): Promise<RouteResponse & { provider: string }> {
+    const cacheKey = this.getCacheKey(start, end, options.profile);
 
-    if (this.routeCache.has(cacheKey)) {
-      return this.routeCache.get(cacheKey)!;
+    // Cache prüfen
+    const cached = this.getFromCache(cacheKey);
+    if (cached) {
+      return { ...cached, provider: 'Cached' };
     }
 
-    const request: RouteRequest = { start, end };
-
-    let result: RouteResponse | null = null;
-
-    // Try OSRM with multiple fallback URLs
-    for (const osrmUrl of this.OSRM_FALLBACK_URLS) {
+    // Offline-Routing zuerst versuchen (falls verfügbar)
+    if (this.offlineRoutingAvailable) {
       try {
-        result = await this.calculateWithOSRM(request, osrmUrl);
-        break;
+        const startTime = Date.now();
+        const offlineRoute = await this.calculateWithOfflineOSRM(start, end, options.profile);
+        const duration = Date.now() - startTime;
+        
+        this.trackRoutingMetrics('Offline-OSRM', true, duration);
+        this.saveToCache(cacheKey, offlineRoute);
+        return { ...offlineRoute, provider: 'Offline-OSRM' };
       } catch (error) {
-        console.warn(`OSRM ${osrmUrl} failed:`, error);
+        console.warn('Offline-Routing fehlgeschlagen:', error);
+        this.trackRoutingError('Offline-OSRM', error);
+      }
+    }
+
+    // Online-Provider in Prioritätsreihenfolge versuchen
+    for (const provider of this.ROUTING_PROVIDERS) {
+      try {
+        const startTime = Date.now();
+        let route: RouteResponse;
+        
+        switch (provider.name) {
+          case 'OSRM-Main':
+          case 'OSRM-Alt':
+          case 'OSRM-DE':
+            route = await this.calculateWithOSRM(start, end, provider.url, options.profile);
+            break;
+          case 'Valhalla':
+            route = await this.calculateWithValhalla(start, end, options.profile);
+            break;
+          case 'GraphHopper':
+            route = await this.calculateWithGraphHopper(start, end, options.profile);
+            break;
+          default:
+            continue;
+        }
+
+        const duration = Date.now() - startTime;
+        this.trackRoutingMetrics(provider.name, true, duration);
+        this.saveToCache(cacheKey, route);
+        return { ...route, provider: provider.name };
+      } catch (error) {
+        console.warn(`${provider.name} fehlgeschlagen:`, error);
+        this.trackRoutingError(provider.name, error);
         continue;
       }
     }
 
-    if (!result) {
-      // Try Valhalla as fallback
-      try {
-        result = await this.calculateWithValhalla(request);
-      } catch (error) {
-        console.warn('Valhalla failed, using direct distance:', error);
-      }
-    }
-
-    if (!result) {
-      result = this.createFallbackRoute(start, end);
-    }
-
-    this.saveToCache(cacheKey, result);
-
-    return result;
+    // Fallback auf direkte Route mit realistischer Schätzung
+    const fallbackRoute = this.createRealisticFallbackRoute(start, end, options.profile);
+    this.saveToCache(cacheKey, fallbackRoute);
+    return { ...fallbackRoute, provider: 'Fallback' };
   }
 
-  // OSRM routing implementation with configurable URL
-  private async calculateWithOSRM(request: RouteRequest, baseUrl?: string): Promise<RouteResponse> {
-    const { start, end } = request;
-    const url = this.buildOSRMUrl(start, end, baseUrl);
-
+  // Offline OSRM-Routing
+  private async calculateWithOfflineOSRM(
+    start: Coordinates,
+    end: Coordinates,
+    profile: string = 'driving'
+  ): Promise<RouteResponse> {
+    const url = `${this.OFFLINE_ROUTING_URL}/route/v1/${profile}/${start.lng},${start.lat};${end.lng},${end.lat}`;
+    
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Revierkompass/1.0'
-      },
-      // Timeout nach 10 Sekunden
-      signal: AbortSignal.timeout(10000)
+      headers: this.DEFAULT_HEADERS,
+      signal: AbortSignal.timeout(8000)
     });
+
+    if (!response.ok) {
+      throw new Error(`Offline OSRM error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return this.parseOSRMResponse(data);
+  }
+
+  // Verbesserte OSRM-Implementierung
+  private async calculateWithOSRM(
+    start: Coordinates,
+    end: Coordinates,
+    baseUrl: string,
+    profile: string = 'driving'
+  ): Promise<RouteResponse> {
+    const url = `${baseUrl}/${profile}/${start.lng},${start.lat};${end.lng},${end.lat}`;
     
+    const params = new URLSearchParams({
+      overview: 'full',
+      geometries: 'geojson',
+      steps: 'true',
+      annotations: 'true',
+      continue_straight: 'true'
+    });
+
+    const response = await fetch(`${url}?${params}`, {
+      method: 'GET',
+      headers: this.DEFAULT_HEADERS,
+      signal: AbortSignal.timeout(12000)
+    });
+
     if (!response.ok) {
       throw new Error(`OSRM API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    
+    return this.parseOSRMResponse(data);
+  }
+
+  // OSRM-Response parsen
+  private parseOSRMResponse(data: any): RouteResponse {
     if (!data.routes || data.routes.length === 0) {
-      throw new Error('No routes found');
+      throw new Error('Keine Route gefunden');
     }
 
     const route = data.routes[0];
+    const coordinates = route.geometry.coordinates.map((coord: number[]) => [coord[0], coord[1]]);
+
     return {
-      coordinates: route.geometry.coordinates,
+      coordinates,
       distance: route.distance,
-      duration: route.duration
+      duration: route.duration,
+      steps: route.legs?.[0]?.steps?.map((step: any) => ({
+        instruction: step.maneuver.instruction,
+        distance: step.distance,
+        duration: step.duration,
+        coordinates: step.geometry?.coordinates || []
+      }))
     };
   }
 
-  private createFallbackRoute(start: Coordinates, end: Coordinates): RouteResponse {
-    const distanceKm = this.calculateDirectDistance(start, end);
-    return {
-      coordinates: [
-        [start.lng, start.lat],
-        [end.lng, end.lat]
-      ],
-      distance: distanceKm * 1000,
-      duration: Math.round((distanceKm / 50) * 3600) // assume 50km/h
-    };
-  }
-
-  private saveToCache(key: string, route: RouteResponse): void {
-    if (this.routeCache.size >= this.MAX_CACHE_SIZE) {
-      const oldest = this.routeCache.keys().next().value;
-      if (oldest) {
-        this.routeCache.delete(oldest);
-      }
-    }
-    this.routeCache.set(key, route);
-  }
-
-  // Valhalla routing implementation (alternative)
-  private async calculateWithValhalla(request: RouteRequest): Promise<RouteResponse> {
-    const { start, end } = request;
-    
-    const payload = {
+  // Verbesserte Valhalla-Routing
+  private async calculateWithValhalla(
+    start: Coordinates,
+    end: Coordinates,
+    profile: string = 'auto'
+  ): Promise<RouteResponse> {
+    const request = {
       locations: [
         { lat: start.lat, lon: start.lng },
         { lat: end.lat, lon: end.lng }
       ],
-      costing: "auto",
-      shape_match: "edge_walk",
-      format: "json"
+      costing: profile,
+      directions_options: {
+        units: 'kilometers',
+        language: 'de-DE'
+      }
     };
 
-    const response = await fetch(this.VALHALLA_BASE_URL, {
+    const response = await fetch('https://valhalla1.openstreetmap.de/route', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        ...this.DEFAULT_HEADERS,
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload),
-      // Timeout nach 10 Sekunden
+      body: JSON.stringify(request),
+      signal: AbortSignal.timeout(15000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Valhalla API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return this.parseValhallaResponse(data);
+  }
+
+  // Verbesserte Valhalla-Response-Parsing
+  private parseValhallaResponse(data: any): RouteResponse {
+    if (!data.trip?.legs?.[0]) {
+      throw new Error('Keine Route gefunden');
+    }
+
+    const leg: ValhallaLeg = data.trip.legs[0];
+    const coordinates = this.decodePolyline(leg.shape);
+
+    return {
+      coordinates,
+      distance: leg.summary.length * 1000, // km → m
+      duration: leg.summary.time * 60 // min → sec
+    };
+  }
+
+  // GraphHopper-Routing
+  private async calculateWithGraphHopper(
+    start: Coordinates,
+    end: Coordinates,
+    profile: string = 'car'
+  ): Promise<RouteResponse> {
+    const url = 'https://graphhopper.com/api/1/route';
+    const params = new URLSearchParams();
+    params.append('point', `${start.lat},${start.lng}`);
+    params.append('point', `${end.lat},${end.lng}`);
+    params.append('vehicle', profile);
+    params.append('locale', 'de');
+    params.append('instructions', 'true');
+    params.append('calc_points', 'true');
+    params.append('points_encoded', 'false');
+
+    const response = await fetch(`${url}?${params}`, {
+      method: 'GET',
+      headers: this.DEFAULT_HEADERS,
       signal: AbortSignal.timeout(10000)
     });
 
     if (!response.ok) {
-      throw new Error(`Valhalla API error: ${response.status} ${response.statusText}`);
+      throw new Error(`GraphHopper API error: ${response.status}`);
     }
 
     const data = await response.json();
-    
-    if (!data.trip || !data.trip.legs || data.trip.legs.length === 0) {
-      throw new Error('No routes found from Valhalla');
+    return this.parseGraphHopperResponse(data);
+  }
+
+  // GraphHopper-Response parsen
+  private parseGraphHopperResponse(data: any): RouteResponse {
+    if (!data.paths || data.paths.length === 0) {
+      throw new Error('Keine Route gefunden');
     }
 
-    const leg = data.trip.legs[0];
-    
-    // Decode Valhalla's polyline to coordinates
-    const coordinates = this.decodePolyline(leg.shape);
-    
+    const path = data.paths[0];
+    const coordinates = path.points.coordinates.map((coord: number[]) => [coord[0], coord[1]]);
+
     return {
       coordinates,
-      distance: leg.summary.length * 1000, // Convert km to meters
-      duration: leg.summary.time
+      distance: path.distance,
+      duration: path.time / 1000 // Convert to seconds
+    };
+  }
+
+  // Realistische Fallback-Route (nicht nur Luftlinie)
+  private createRealisticFallbackRoute(
+    start: Coordinates,
+    end: Coordinates,
+    profile: string = 'driving'
+  ): RouteResponse {
+    const directDistance = this.calculateDirectDistance(start, end);
+    
+    // Realistische Straßenentfernung (ca. 1.3x Luftlinie)
+    const roadDistance = directDistance * 1.3;
+    
+    // Realistische Fahrzeit basierend auf Profil
+    const avgSpeed = profile === 'driving' ? 50 : 30; // km/h
+    const duration = (roadDistance / avgSpeed) * 3600; // in Sekunden
+
+    // Einfache Route mit Zwischenpunkten für realistischere Darstellung
+    const coordinates = this.generateRealisticRoute(start, end, roadDistance);
+
+    return {
+      coordinates,
+      distance: roadDistance * 1000, // Convert to meters
+      duration
+    };
+  }
+
+  // Realistische Route mit Zwischenpunkten generieren
+  private generateRealisticRoute(start: Coordinates, end: Coordinates, distance: number): [number, number][] {
+    const points: [number, number][] = [];
+    const numPoints = Math.max(3, Math.floor(distance / 2)); // Mindestens 3 Punkte
+
+    for (let i = 0; i <= numPoints; i++) {
+      const t = i / numPoints;
+      const lat = start.lat + (end.lat - start.lat) * t;
+      const lng = start.lng + (end.lng - start.lng) * t;
+      
+      // Leichte Abweichung für realistischere Route
+      const deviation = Math.sin(t * Math.PI) * 0.001;
+      points.push([lng + deviation, lat + deviation]);
+    }
+
+    return points;
+  }
+
+  // Verbesserte Hilfsfunktionen
+  private mapProfileToProvider(profile: string): string {
+    const mapping: Record<string, string> = {
+      'fastest': 'driving',
+      'shortest': 'driving',
+      'eco': 'driving',
+      'police': 'emergency' // Spezialprofil für Polizei
+    };
+    return mapping[profile] || 'driving';
+  }
+
+  private mapProfileToRouteType(profile: string): 'Schnellste' | 'Kürzeste' | 'Ökonomisch' {
+    const mapping: Record<string, 'Schnellste' | 'Kürzeste' | 'Ökonomisch'> = {
+      'fastest': 'Schnellste',
+      'shortest': 'Kürzeste',
+      'eco': 'Ökonomisch'
+    };
+    return mapping[profile] || 'Schnellste';
+  }
+
+  private calculateFuelConsumption(distance: number, profile: string): number {
+    const baseConsumption = 9.5; // L/100km
+    const multiplier = profile === 'eco' ? 0.8 : profile === 'fastest' ? 1.2 : 1.0;
+    return (distance * baseConsumption * multiplier) / 100;
+  }
+
+  private calculateCost(distance: number, profile: string): number {
+    const fuelPrice = 1.75; // €/L
+    const fuelConsumption = this.calculateFuelConsumption(distance, profile);
+    return fuelConsumption * fuelPrice;
+  }
+
+  // Verbesserte Cache-Funktionen
+  private getCacheKey(start: Coordinates, end: Coordinates, profile?: string): string {
+    return `${start.lng.toFixed(6)}-${start.lat.toFixed(6)}-${end.lng.toFixed(6)}-${end.lat.toFixed(6)}-${profile || 'driving'}`;
+  }
+
+  private getFromCache(key: string): RouteResponse | null {
+    const cached = this.routeCache.get(key);
+    if (!cached) return null;
+
+    const now = Date.now();
+    if (now - cached.timestamp > this.CACHE_DURATION) {
+      this.routeCache.delete(key);
+      return null;
+    }
+
+    return cached.data;
+  }
+
+  private saveToCache(key: string, route: RouteResponse): void {
+    if (this.routeCache.size >= this.MAX_CACHE_SIZE) {
+      const oldestKey = this.routeCache.keys().next().value;
+      this.routeCache.delete(oldestKey);
+    }
+
+    this.routeCache.set(key, {
+      data: route,
+      timestamp: Date.now()
+    });
+  }
+
+  // Metrics-Tracking
+  private trackRoutingMetrics(provider: string, success: boolean, duration: number, error?: string): void {
+    this.metrics.push({
+      provider,
+      success,
+      duration,
+      error
+    });
+
+    // Metrics auf 100 Einträge begrenzen
+    if (this.metrics.length > 100) {
+      this.metrics.shift();
+    }
+  }
+
+  private trackRoutingError(provider: string, error: any): void {
+    this.trackRoutingMetrics(provider, false, 0, error.message);
+  }
+
+  // Metrics abrufen
+  getRoutingMetrics(): RoutingMetrics[] {
+    return [...this.metrics];
+  }
+
+  // Cache-Statistiken
+  getCacheStats(): { size: number; hitRate: number } {
+    const totalRequests = this.metrics.length;
+    const cacheHits = this.metrics.filter(m => m.provider === 'Cached').length;
+    const hitRate = totalRequests > 0 ? (cacheHits / totalRequests) * 100 : 0;
+
+    return {
+      size: this.routeCache.size,
+      hitRate
+    };
+  }
+
+  // Fallback-Route für fehlgeschlagene Berechnungen
+  private createFallbackRoute(
+    startAddress: Address,
+    destination: any,
+    type: 'station' | 'custom'
+  ): RouteResult {
+    const directDistance = this.calculateDirectDistance(startAddress.coordinates, destination.coordinates);
+    const roadDistance = directDistance * 1.3; // Realistische Schätzung
+
+    return {
+      id: `${type}-${destination.id}`,
+      destinationId: destination.id,
+      destinationName: destination.name,
+      destinationType: type,
+      address: destination.address,
+      distance: roadDistance,
+      duration: Math.round(roadDistance * 1.5), // Realistische Fahrzeit
+      estimatedFuel: this.calculateFuelConsumption(roadDistance, 'fastest'),
+      estimatedCost: this.calculateCost(roadDistance, 'fastest'),
+      routeType: 'Kürzeste',
+      coordinates: destination.coordinates,
+      color: this.generateRouteColor(0),
+      route: {
+        coordinates: this.generateRealisticRoute(startAddress.coordinates, destination.coordinates, roadDistance),
+        distance: roadDistance * 1000,
+        duration: roadDistance * 1.5 * 60
+      },
+      provider: 'Direct',
+      stationType: type === 'station' ? destination.type : undefined
     };
   }
 

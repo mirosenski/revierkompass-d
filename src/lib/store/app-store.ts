@@ -66,7 +66,7 @@ export interface RouteResult {
     distance: number;
     duration: number;
   };
-  provider: 'OSRM' | 'Valhalla' | 'GraphHopper' | 'Direct';
+  provider: 'OSRM' | 'Valhalla' | 'GraphHopper' | 'Direct' | 'Offline-OSRM';
 }
 
 // Wizard State
