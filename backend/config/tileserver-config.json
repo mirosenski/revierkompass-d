@@ -1,0 +1,57 @@
+{
+  "options": {
+    "paths": {
+      "root": "/data",
+      "fonts": "/data/fonts",
+      "sprites": "/data/sprites",
+      "styles": "/data/styles",
+      "mbtiles": "/data"
+    },
+    "domains": [
+      "localhost:8080",
+      "127.0.0.1:8080",
+      "revierkompass.local"
+    ],
+    "formatQuality": {
+      "jpeg": 80,
+      "webp": 90
+    },
+    "maxzoom": 18,
+    "pbf": true,
+    "cors": true
+  },
+  "styles": {
+    "bw-basic": {
+      "style": "/data/styles/bw-basic.json",
+      "tilejson": {
+        "type": "overlay",
+        "bounds": [7.5, 47.5, 10.5, 50.0]
+      }
+    },
+    "bw-satellite": {
+      "style": "/data/styles/bw-satellite.json",
+      "tilejson": {
+        "type": "overlay", 
+        "bounds": [7.5, 47.5, 10.5, 50.0]
+      }
+    },
+    "bw-police": {
+      "style": "/data/styles/bw-police.json",
+      "tilejson": {
+        "type": "overlay",
+        "bounds": [7.5, 47.5, 10.5, 50.0]
+      }
+    }
+  },
+  "data": {
+    "baden-wuerttemberg": {
+      "mbtiles": "/data/baden-wuerttemberg.mbtiles"
+    },
+    "bw-police-data": {
+      "mbtiles": "/data/bw-police-data.mbtiles"
+    },
+    "bw-transport": {
+      "mbtiles": "/data/bw-transport.mbtiles"
+    }
+  }
+}

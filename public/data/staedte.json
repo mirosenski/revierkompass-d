@@ -1,0 +1,409 @@
+{
+  "staedte": [
+    {
+      "name": "Stuttgart",
+      "koordinaten": {
+        "lat": 48.7758,
+        "lng": 9.1829
+      },
+      "einwohner": 626275,
+      "region": "Stuttgart"
+    },
+    {
+      "name": "Mannheim",
+      "koordinaten": {
+        "lat": 49.4875,
+        "lng": 8.4660
+      },
+      "einwohner": 309370,
+      "region": "Rhein-Neckar"
+    },
+    {
+      "name": "Karlsruhe",
+      "koordinaten": {
+        "lat": 49.0069,
+        "lng": 8.4037
+      },
+      "einwohner": 308436,
+      "region": "Mittlerer Oberrhein"
+    },
+    {
+      "name": "Freiburg",
+      "koordinaten": {
+        "lat": 47.9960,
+        "lng": 7.8494
+      },
+      "einwohner": 230241,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Heidelberg",
+      "koordinaten": {
+        "lat": 49.4093,
+        "lng": 8.6947
+      },
+      "einwohner": 161485,
+      "region": "Rhein-Neckar"
+    },
+    {
+      "name": "Heilbronn",
+      "koordinaten": {
+        "lat": 49.1427,
+        "lng": 9.2109
+      },
+      "einwohner": 126458,
+      "region": "Heilbronn-Franken"
+    },
+    {
+      "name": "Ulm",
+      "koordinaten": {
+        "lat": 48.3984,
+        "lng": 9.9914
+      },
+      "einwohner": 126596,
+      "region": "Donau-Iller"
+    },
+    {
+      "name": "Ludwigsburg",
+      "koordinaten": {
+        "lat": 48.8975,
+        "lng": 9.1906
+      },
+      "einwohner": 93482,
+      "region": "Stuttgart"
+    },
+    {
+      "name": "Pforzheim",
+      "koordinaten": {
+        "lat": 48.8908,
+        "lng": 8.7003
+      },
+      "einwohner": 125957,
+      "region": "Nordschwarzwald"
+    },
+    {
+      "name": "Reutlingen",
+      "koordinaten": {
+        "lat": 48.4919,
+        "lng": 9.2044
+      },
+      "einwohner": 116456,
+      "region": "Neckar-Alb"
+    },
+    {
+      "name": "Aalen",
+      "koordinaten": {
+        "lat": 48.8379,
+        "lng": 10.0933
+      },
+      "einwohner": 69329,
+      "region": "Ostwürttemberg"
+    },
+    {
+      "name": "Konstanz",
+      "koordinaten": {
+        "lat": 47.6779,
+        "lng": 9.1732
+      },
+      "einwohner": 84911,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Tübingen",
+      "koordinaten": {
+        "lat": 48.5216,
+        "lng": 9.0576
+      },
+      "einwohner": 91506,
+      "region": "Neckar-Alb"
+    },
+    {
+      "name": "Villingen-Schwenningen",
+      "koordinaten": {
+        "lat": 48.0581,
+        "lng": 8.4593
+      },
+      "einwohner": 87052,
+      "region": "Schwarzwald-Baar-Heuberg"
+    },
+    {
+      "name": "Offenburg",
+      "koordinaten": {
+        "lat": 48.4735,
+        "lng": 7.9417
+      },
+      "einwohner": 60843,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Friedrichshafen",
+      "koordinaten": {
+        "lat": 47.6540,
+        "lng": 9.4741
+      },
+      "einwohner": 61593,
+      "region": "Bodensee-Oberschwaben"
+    },
+    {
+      "name": "Ravensburg",
+      "koordinaten": {
+        "lat": 47.7814,
+        "lng": 9.6134
+      },
+      "einwohner": 51013,
+      "region": "Bodensee-Oberschwaben"
+    },
+    {
+      "name": "Weinheim",
+      "koordinaten": {
+        "lat": 49.5481,
+        "lng": 8.6695
+      },
+      "einwohner": 44726,
+      "region": "Rhein-Neckar"
+    },
+    {
+      "name": "Schwetzingen",
+      "koordinaten": {
+        "lat": 49.3847,
+        "lng": 8.5761
+      },
+      "einwohner": 22062,
+      "region": "Rhein-Neckar"
+    },
+    {
+      "name": "Sinsheim",
+      "koordinaten": {
+        "lat": 49.2480,
+        "lng": 8.8795
+      },
+      "einwohner": 35442,
+      "region": "Rhein-Neckar"
+    },
+    {
+      "name": "Wiesloch",
+      "koordinaten": {
+        "lat": 49.2947,
+        "lng": 8.6982
+      },
+      "einwohner": 26599,
+      "region": "Rhein-Neckar"
+    },
+    {
+      "name": "Bruchsal",
+      "koordinaten": {
+        "lat": 49.1244,
+        "lng": 8.5976
+      },
+      "einwohner": 46684,
+      "region": "Mittlerer Oberrhein"
+    },
+    {
+      "name": "Ettlingen",
+      "koordinaten": {
+        "lat": 48.9447,
+        "lng": 8.4087
+      },
+      "einwohner": 39758,
+      "region": "Mittlerer Oberrhein"
+    },
+    {
+      "name": "Baden-Baden",
+      "koordinaten": {
+        "lat": 48.7584,
+        "lng": 8.2397
+      },
+      "einwohner": 55543,
+      "region": "Mittlerer Oberrhein"
+    },
+    {
+      "name": "Rastatt",
+      "koordinaten": {
+        "lat": 48.8587,
+        "lng": 8.2053
+      },
+      "einwohner": 50529,
+      "region": "Mittlerer Oberrhein"
+    },
+    {
+      "name": "Calw",
+      "koordinaten": {
+        "lat": 48.7147,
+        "lng": 8.7395
+      },
+      "einwohner": 24197,
+      "region": "Nordschwarzwald"
+    },
+    {
+      "name": "Freudenstadt",
+      "koordinaten": {
+        "lat": 48.4647,
+        "lng": 8.4115
+      },
+      "einwohner": 23016,
+      "region": "Nordschwarzwald"
+    },
+    {
+      "name": "Horb am Neckar",
+      "koordinaten": {
+        "lat": 48.4478,
+        "lng": 8.6924
+      },
+      "einwohner": 25717,
+      "region": "Nordschwarzwald"
+    },
+    {
+      "name": "Nagold",
+      "koordinaten": {
+        "lat": 48.5520,
+        "lng": 8.7240
+      },
+      "einwohner": 22951,
+      "region": "Nordschwarzwald"
+    },
+    {
+      "name": "Emmendingen",
+      "koordinaten": {
+        "lat": 48.1214,
+        "lng": 7.8512
+      },
+      "einwohner": 28313,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Lahr",
+      "koordinaten": {
+        "lat": 48.3389,
+        "lng": 7.8728
+      },
+      "einwohner": 47545,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Kehl",
+      "koordinaten": {
+        "lat": 48.5700,
+        "lng": 7.8162
+      },
+      "einwohner": 36065,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Achern",
+      "koordinaten": {
+        "lat": 48.6280,
+        "lng": 8.0740
+      },
+      "einwohner": 25518,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Oberkirch",
+      "koordinaten": {
+        "lat": 48.5420,
+        "lng": 8.0560
+      },
+      "einwohner": 20595,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Haslach im Kinzigtal",
+      "koordinaten": {
+        "lat": 48.2790,
+        "lng": 8.0890
+      },
+      "einwohner": 7120,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Lörrach",
+      "koordinaten": {
+        "lat": 47.6156,
+        "lng": 7.6615
+      },
+      "einwohner": 49266,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Weil am Rhein",
+      "koordinaten": {
+        "lat": 47.5936,
+        "lng": 7.6196
+      },
+      "einwohner": 30721,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Rheinfelden",
+      "koordinaten": {
+        "lat": 47.5575,
+        "lng": 7.7891
+      },
+      "einwohner": 33052,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Schönau im Schwarzwald",
+      "koordinaten": {
+        "lat": 47.7942,
+        "lng": 7.9009
+      },
+      "einwohner": 2454,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Titisee-Neustadt",
+      "koordinaten": {
+        "lat": 47.9135,
+        "lng": 8.2086
+      },
+      "einwohner": 12055,
+      "region": "Schwarzwald-Baar-Heuberg"
+    },
+    {
+      "name": "Waldkirch",
+      "koordinaten": {
+        "lat": 48.0953,
+        "lng": 7.9644
+      },
+      "einwohner": 21851,
+      "region": "Südlicher Oberrhein"
+    },
+    {
+      "name": "Sigmaringen",
+      "koordinaten": {
+        "lat": 48.0896,
+        "lng": 9.2133
+      },
+      "einwohner": 17233,
+      "region": "Donau-Iller"
+    },
+    {
+      "name": "Überlingen",
+      "koordinaten": {
+        "lat": 47.7697,
+        "lng": 9.1610
+      },
+      "einwohner": 23089,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Stockach",
+      "koordinaten": {
+        "lat": 47.8516,
+        "lng": 9.0097
+      },
+      "einwohner": 17335,
+      "region": "Hochrhein-Bodensee"
+    },
+    {
+      "name": "Bad Mergentheim",
+      "koordinaten": {
+        "lat": 49.4914,
+        "lng": 9.7742
+      },
+      "einwohner": 23275,
+      "region": "Heilbronn-Franken"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Nur das Nötigste ignorieren
+node_modules/
+.env
+.DS_Store
+*.log
+.vscode/settings.json
+.idea/
+
+# Optional: Build-Outputs (können regeneriert werden)
+dist/
+build/
+backend/prisma/dev.db*
+.vercel

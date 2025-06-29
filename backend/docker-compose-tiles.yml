@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with PostGIS for routing and data storage
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: revierkompass-postgres
+    environment:
+      POSTGRES_DB: revierkompass
+      POSTGRES_USER: revierkompass
+      POSTGRES_PASSWORD: revierkompass123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data/bw-data.osm.pbf:/data/bw-data.osm.pbf:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - revierkompass-network
+
+  # TileServer GL for serving offline map tiles
+  tileserver:
+    image: maptiler/tileserver-gl:latest
+    container_name: revierkompass-tileserver
+    volumes:
+      - ./tiles:/data
+      - ./config/tileserver-config.json:/data/config.json:ro
+    ports:
+      - "8080:8080"
+    environment:
+      - MBTILES_FILE=/data/baden-wuerttemberg.mbtiles
+    networks:
+      - revierkompass-network
+    depends_on:
+      - postgres
+
+  # OSRM Backend for routing
+  osrm-backend:
+    image: osrm/osrm-backend:latest
+    container_name: revierkompass-osrm
+    volumes:
+      - ./data:/data
+    ports:
+      - "5000:5000"
+    command: >
+      sh -c "
+      if [ ! -f /data/bw-data.osrm ]; then
+        osrm-extract -p /opt/car.lua /data/bw-data.osm.pbf &&
+        osrm-partition /data/bw-data.osrm &&
+        osrm-customize /data/bw-data.osrm
+      fi &&
+      osrm-routed --algorithm mld /data/bw-data.osrm --max-table-size 10000
+      "
+    networks:
+      - revierkompass-network
+    depends_on:
+      - postgres
+
+  # Alternative: Valhalla for more advanced routing
+  valhalla:
+    image: gisops/valhalla:latest
+    container_name: revierkompass-valhalla
+    volumes:
+      - ./data:/data
+      - ./config/valhalla_tiles:/valhalla_tiles
+    ports:
+      - "8002:8002"
+    environment:
+      - DATA_FOLDER=/data
+      - TILES_FOLDER=/valhalla_tiles
+    networks:
+      - revierkompass-network
+    depends_on:
+      - postgres
+
+  # Nominatim for geocoding (offline)
+  nominatim:
+    image: mediagis/nominatim:4.2
+    container_name: revierkompass-nominatim
+    environment:
+      PBF_URL: file:///data/bw-data.osm.pbf
+      REPLICATION_URL: ""
+      IMPORT_WIKIPEDIA: "false"
+      IMPORT_US_POSTCODES: "false"
+      IMPORT_GB_POSTCODES: "false"
+      THREADS: 4
+    volumes:
+      - nominatim_data:/var/lib/postgresql/14/main
+      - ./data/bw-data.osm.pbf:/data/bw-data.osm.pbf:ro
+    ports:
+      - "8001:8080"
+    networks:
+      - revierkompass-network
+    depends_on:
+      - postgres
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: revierkompass-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - revierkompass-network
+
+  # Our main backend API
+  api:
+    build: .
+    container_name: revierkompass-api
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://revierkompass:revierkompass123@postgres:5432/revierkompass
+      - REDIS_URL=redis://redis:6379
+      - OSRM_URL=http://osrm-backend:5000
+      - VALHALLA_URL=http://valhalla:8002
+      - NOMINATIM_URL=http://nominatim:8080
+      - TILESERVER_URL=http://tileserver:8080
+    depends_on:
+      - postgres
+      - redis
+      - osrm-backend
+      - nominatim
+      - tileserver
+    networks:
+      - revierkompass-network
+
+volumes:
+  postgres_data:
+  nominatim_data:
+  redis_data:
+
+networks:
+  revierkompass-network:
+    driver: bridge

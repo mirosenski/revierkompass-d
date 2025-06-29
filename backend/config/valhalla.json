@@ -1,0 +1,157 @@
+{
+  "mjolnir": {
+    "tile_dir": "/valhalla_tiles",
+    "admin": "/data/admin.sqlite",
+    "timezone": "/data/timezone.sqlite",
+    "transit_dir": "/data/transit",
+    "logging": {
+      "type": "std_out",
+      "color": true
+    },
+    "max_cache_size": 1000000000,
+    "hierarchy": true,
+    "shortcuts": true,
+    "concurrency": 4,
+    "tile_extract": "/data/valhalla_tiles.tar",
+    "data_processing": {
+      "use_admin_db": true,
+      "use_direction_on_ways": true,
+      "allow_alt_name": false,
+      "use_urban_tag": false
+    }
+  },
+  "loki": {
+    "actions": ["locate", "route", "height", "sources_to_targets", "optimized_route", "isochrone", "trace_route", "trace_attributes", "transit_available"],
+    "logging": {
+      "type": "std_out",
+      "color": true
+    },
+    "service_defaults": {
+      "minimum_reachability": 50,
+      "radius": 0,
+      "search_cutoff": 35000,
+      "node_snap_tolerance": 5,
+      "street_side_tolerance": 5,
+      "street_side_max_distance": 1000,
+      "heading_tolerance": 60
+    }
+  },
+  "thor": {
+    "logging": {
+      "type": "std_out",
+      "color": true
+    },
+    "source_to_target_algorithm": "select_optimal"
+  },
+  "odin": {
+    "logging": {
+      "type": "std_out",
+      "color": true
+    }
+  },
+  "meili": {
+    "customizable": ["turn_penalty_factor", "max_route_distance_factor", "max_route_time_factor"],
+    "mode": "auto",
+    "grid": {
+      "cache_size": 100240,
+      "size": 500
+    },
+    "default": {
+      "sigma_z": 4.07,
+      "gps_accuracy": 5.0,
+      "beta": 3,
+      "max_route_distance_factor": 5,
+      "max_route_time_factor": 5,
+      "breakage_distance": 2000,
+      "max_search_radius": 200,
+      "interpolation_distance": 10,
+      "search_radius": 15.0,
+      "turn_penalty_factor": 200
+    },
+    "auto": {
+      "turn_penalty_factor": 200,
+      "search_radius": 15
+    },
+    "pedestrian": {
+      "turn_penalty_factor": 100,
+      "search_radius": 25
+    },
+    "bicycle": {
+      "turn_penalty_factor": 140,
+      "search_radius": 25
+    },
+    "bus": {
+      "turn_penalty_factor": 180,
+      "search_radius": 15
+    }
+  },
+  "httpd": {
+    "service": {
+      "listen": "0.0.0.0:8002",
+      "loopback": "0.0.0.0:8003",
+      "interrupt": "ipc:///tmp/interrupt",
+      "shutdown_timeout": 1
+    }
+  },
+  "service_limits": {
+    "auto": {
+      "max_distance": 5000000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 400000.0,
+      "max_matrix_location_pairs": 2500
+    },
+    "auto_shorter": {
+      "max_distance": 5000000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 400000.0,
+      "max_matrix_location_pairs": 2500
+    },
+    "bus": {
+      "max_distance": 5000000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 400000.0,
+      "max_matrix_location_pairs": 2500
+    },
+    "taxi": {
+      "max_distance": 5000000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 400000.0,
+      "max_matrix_location_pairs": 2500
+    },
+    "bicycle": {
+      "max_distance": 500000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 200000.0,
+      "max_matrix_location_pairs": 2500
+    },
+    "pedestrian": {
+      "max_distance": 250000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 200000.0,
+      "max_matrix_location_pairs": 2500
+    },
+    "skadi": {
+      "max_shape": 750000,
+      "min_resample": 10.0
+    },
+    "isochrone": {
+      "max_contours": 4,
+      "max_time": 120,
+      "max_locations": 1
+    },
+    "trace": {
+      "max_distance": 200000.0,
+      "max_gps_accuracy": 100.0,
+      "max_search_radius": 100,
+      "max_shape": 16000,
+      "max_best_paths": 4,
+      "max_best_paths_shape": 100
+    },
+    "bikeshare": {
+      "max_distance": 500000.0,
+      "max_locations": 50,
+      "max_matrix_distance": 200000.0,
+      "max_matrix_location_pairs": 2500
+    }
+  }
+}
