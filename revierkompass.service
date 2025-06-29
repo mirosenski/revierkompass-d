@@ -1,0 +1,15 @@
+[Unit]
+Description=RevierKompass - Vollständiges Kartensystem
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/miro/projects/PTLS/react/revierkompass-d
+ExecStart=/bin/bash /home/miro/projects/PTLS/react/revierkompass-d/start-all.sh
+ExecStop=/usr/local/bin/docker-compose -f /home/miro/projects/PTLS/react/revierkompass-d/docker-compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target 

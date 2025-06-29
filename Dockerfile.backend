@@ -1,0 +1,18 @@
+# Backend Dockerfile für Node.js API Server
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Kopiere package.json und installiere Dependencies
+COPY package-api.json ./package.json
+RUN npm install
+
+# Kopiere API Server Code
+COPY api-server.cjs ./
+COPY database.json ./
+
+# Expose Port 5179
+EXPOSE 5179
+
+# Start API Server
+CMD ["node", "api-server.cjs"] 

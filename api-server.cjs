@@ -65,7 +65,8 @@ app.use('/api/maps/route', createProxyMiddleware({
   changeOrigin: true,
   pathRewrite: {
     '^/api/maps/route': '/route'
-  }
+  },
+  logLevel: 'debug'
 }));
 
 // Proxy für Nominatim mit Fallback
