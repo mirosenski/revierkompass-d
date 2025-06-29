@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, CheckCircle, ArrowRight, Search, Navigation } from 'lucide-react';
+import { MapPin, CheckCircle, ArrowRight, Navigation } from 'lucide-react';
 import { useAppStore } from '@/lib/store/app-store';
 import { toast } from 'react-hot-toast';
 
@@ -69,79 +69,43 @@ const Step1AddressInputSimple: React.FC = () => {
     handleSubmit(address);
   };
 
-  const handleQuickAddress = (quickAddress: string) => {
-    setAddress(quickAddress);
-    handleSubmit(quickAddress);
-  };
-
   return (
-    <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl mx-auto px-4 sm:px-6">
-      {/* Main Container */}
-      <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10">
-        <div className="space-y-6">
-          {/* Header - Ultra Modern */}
+    <div className="w-full max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto px-4 sm:px-6">
+      {/* Main Container - Größer und zentraler */}
+      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 lg:p-12">
+        <div className="space-y-8">
+          {/* Header - Ultra Modern und größer */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <div className="flex justify-center mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-3 rounded-2xl shadow-lg">
-                <MapPin className="h-6 w-6 text-white" />
+            <div className="flex justify-center mb-6">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 rounded-3xl shadow-lg">
+                <MapPin className="h-8 w-8 text-white" />
               </div>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-2">
-              Startadresse
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3">
+              Startadresse eingeben
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-              Wo startet Ihre Route?
+            <p className="text-slate-600 dark:text-slate-400 text-lg sm:text-xl">
+              Wo startet Ihre Route? Geben Sie Ihre Adresse ein
             </p>
           </motion.div>
 
-          {/* Quick Address Suggestions */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-blue-50/80 dark:bg-blue-900/10 backdrop-blur-sm rounded-2xl p-4"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <Search className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-              <span className="text-blue-800 dark:text-blue-200 font-medium text-sm">Schnellauswahl</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickAddress('Schlossplatz 1, 70173 Stuttgart')}
-                disabled={isSubmitting}
-                className="bg-blue-100/80 dark:bg-blue-800/30 hover:bg-blue-200/80 dark:hover:bg-blue-700/30 text-blue-700 dark:text-blue-300 text-xs sm:text-sm font-medium px-3 py-2 rounded-xl transition-colors disabled:opacity-50 text-left"
-              >
-                Schlossplatz, Stuttgart
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickAddress('Hauptbahnhof, 70173 Stuttgart')}
-                disabled={isSubmitting}
-                className="bg-blue-100/80 dark:bg-blue-800/30 hover:bg-blue-200/80 dark:hover:bg-blue-700/30 text-blue-700 dark:text-blue-300 text-xs sm:text-sm font-medium px-3 py-2 rounded-xl transition-colors disabled:opacity-50 text-left"
-              >
-                Hauptbahnhof, Stuttgart
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Address Input Form - Ultra Clean */}
+          {/* Address Input Form - Ultra Clean und größer */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              {/* Address Field */}
+            <form onSubmit={handleFormSubmit} className="space-y-6">
+              {/* Address Field - Größer und prominenter */}
               <div>
-                <label htmlFor="address" className="block text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label htmlFor="address" className="block text-lg sm:text-xl font-semibold text-slate-700 dark:text-slate-300 mb-3">
                   Adresse eingeben
                 </label>
                 <div className="relative">
@@ -154,35 +118,35 @@ const Step1AddressInputSimple: React.FC = () => {
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     placeholder="z.B. Schlossplatz 1, 70173 Stuttgart"
-                    className={`block w-full pl-4 pr-12 py-3 sm:py-4 rounded-xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 ${
+                    className={`block w-full pl-6 pr-14 py-4 sm:py-5 lg:py-6 text-lg sm:text-xl rounded-2xl bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-3 focus:ring-blue-500 focus:outline-none transition-all duration-300 ${
                       isFocused 
-                        ? 'ring-2 ring-blue-500' 
-                        : 'ring-1 ring-slate-200 dark:ring-slate-600'
+                        ? 'ring-3 ring-blue-500 shadow-lg' 
+                        : 'ring-2 ring-slate-200 dark:ring-slate-600'
                     }`}
                     disabled={isSubmitting}
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <Navigation className="h-4 w-4 text-slate-400" />
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
+                    <Navigation className="h-5 w-5 text-slate-400" />
                   </div>
                 </div>
               </div>
 
-              {/* Submit Button - Ultra Modern */}
+              {/* Submit Button - Ultra Modern und größer */}
               <motion.button
                 type="submit"
                 disabled={isSubmitting || !address.trim()}
-                whileHover={{ scale: isSubmitting ? 1 : 1.01 }}
-                whileTap={{ scale: isSubmitting ? 1 : 0.99 }}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-3 sm:py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed"
+                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-400 disabled:to-slate-500 text-white font-bold py-4 sm:py-5 lg:py-6 px-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 disabled:cursor-not-allowed text-lg sm:text-xl"
               >
                 {isSubmitting ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    <span>Verarbeite...</span>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="animate-spin rounded-full h-5 w-5 border-3 border-white border-t-transparent"></div>
+                    <span>Verarbeite Adresse...</span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <ArrowRight className="h-4 w-4" />
+                  <div className="flex items-center justify-center gap-3">
+                    <ArrowRight className="h-5 w-5" />
                     <span>Route starten</span>
                   </div>
                 )}
@@ -196,15 +160,15 @@ const Step1AddressInputSimple: React.FC = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-green-50/80 dark:bg-green-900/10 backdrop-blur-sm rounded-2xl p-4"
+              className="bg-green-50/80 dark:bg-green-900/10 backdrop-blur-sm rounded-2xl p-6"
             >
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100/80 dark:bg-green-800/50 backdrop-blur-md rounded-xl p-2 flex-shrink-0">
-                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <div className="flex items-center gap-4">
+                <div className="bg-green-100/80 dark:bg-green-800/50 backdrop-blur-md rounded-xl p-3 flex-shrink-0">
+                  <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-green-800 dark:text-green-200 font-medium text-sm">Startadresse bestätigt</p>
-                  <p className="text-green-700 dark:text-green-300 text-xs">
+                  <p className="text-green-800 dark:text-green-200 font-semibold text-lg">Startadresse bestätigt</p>
+                  <p className="text-green-700 dark:text-green-300 text-base">
                     {wizard.startAddress.fullAddress}
                   </p>
                 </div>
@@ -219,8 +183,8 @@ const Step1AddressInputSimple: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-center"
           >
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              🗺️ Automatische Geocoding • Präzise Routenberechnung
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              🗺️ Automatische Geocoding • Präzise Routenberechnung • Baden-Württemberg
             </p>
           </motion.div>
         </div>
