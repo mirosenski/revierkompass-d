@@ -1,7 +1,7 @@
 {
   "stations": [
     {
-      "id": "1751216403080",
+      "id": "1751221075101",
       "name": "Polizeipräsidium Stuttgart",
       "type": "praesidium",
       "city": "Stuttgart",
@@ -14,10 +14,10 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:03.080Z"
+      "createdAt": "2025-06-29T18:17:55.101Z"
     },
     {
-      "id": "1751216403155",
+      "id": "1751221075220",
       "name": "Polizeirevier 1 Theodor-Heuss-Straße",
       "type": "revier",
       "city": "Stuttgart",
@@ -30,11 +30,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:03.155Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:55.220Z"
     },
     {
-      "id": "1751216403405",
+      "id": "1751221075587",
       "name": "Polizeirevier 2 Wolframstraße",
       "type": "revier",
       "city": "Stuttgart",
@@ -47,11 +47,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:03.405Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:55.587Z"
     },
     {
-      "id": "1751216403483",
+      "id": "1751221075870",
       "name": "Polizeirevier 3 Gutenbergstraße",
       "type": "revier",
       "city": "Stuttgart",
@@ -64,11 +64,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:03.483Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:55.870Z"
     },
     {
-      "id": "1751216403729",
+      "id": "1751221075959",
       "name": "Polizeirevier 4 Balinger Straße",
       "type": "revier",
       "city": "Stuttgart",
@@ -81,11 +81,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:03.729Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:55.959Z"
     },
     {
-      "id": "1751216403806",
+      "id": "1751221076249",
       "name": "Polizeirevier 5 Ostendstraße",
       "type": "revier",
       "city": "Stuttgart",
@@ -98,11 +98,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:03.806Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:56.249Z"
     },
     {
-      "id": "1751216404056",
+      "id": "1751221076331",
       "name": "Polizeirevier 6 Martin-Luther Straße",
       "type": "revier",
       "city": "Stuttgart",
@@ -115,11 +115,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:04.056Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:56.331Z"
     },
     {
-      "id": "1751216404133",
+      "id": "1751221076597",
       "name": "Polizeirevier 7 Ludwigsburger Straße",
       "type": "revier",
       "city": "Stuttgart",
@@ -132,11 +132,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:04.133Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:56.597Z"
     },
     {
-      "id": "1751216404383",
+      "id": "1751221076688",
       "name": "Polizeirevier 8 Kärntner Straße",
       "type": "revier",
       "city": "Stuttgart",
@@ -149,11 +149,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216403080",
-      "createdAt": "2025-06-29T17:00:04.383Z"
+      "parentId": "1751221075101",
+      "createdAt": "2025-06-29T18:17:56.688Z"
     },
     {
-      "id": "1751216404460",
+      "id": "1751221076947",
       "name": "Polizeipräsidium Karlsruhe",
       "type": "praesidium",
       "city": "Karlsruhe",
@@ -166,10 +166,10 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:04.460Z"
+      "createdAt": "2025-06-29T18:17:56.947Z"
     },
     {
-      "id": "1751216404709",
+      "id": "1751221077066",
       "name": "Polizeirevier Bad Schönborn",
       "type": "revier",
       "city": "Bad Schönborn",
@@ -182,11 +182,11 @@
       "email": "badschönborn@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:04.709Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:57.066Z"
     },
     {
-      "id": "1751216404788",
+      "id": "1751221077317",
       "name": "Polizeirevier Bretten",
       "type": "revier",
       "city": "Bretten",
@@ -199,11 +199,11 @@
       "email": "bretten@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:04.788Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:57.317Z"
     },
     {
-      "id": "1751216405038",
+      "id": "1751221077463",
       "name": "Polizeirevier Bruchsal",
       "type": "revier",
       "city": "Bruchsal",
@@ -216,11 +216,11 @@
       "email": "bruchsal@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:05.038Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:57.463Z"
     },
     {
-      "id": "1751216405114",
+      "id": "1751221077657",
       "name": "Polizeirevier Calw",
       "type": "revier",
       "city": "Calw",
@@ -233,11 +233,11 @@
       "email": "calw@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:05.114Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:57.657Z"
     },
     {
-      "id": "1751216405363",
+      "id": "1751221077815",
       "name": "Polizeirevier Ettlingen",
       "type": "revier",
       "city": "Ettlingen",
@@ -250,11 +250,11 @@
       "email": "ettlingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:05.363Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:57.815Z"
     },
     {
-      "id": "1751216405439",
+      "id": "1751221078025",
       "name": "Polizeirevier Karlsruhe-Durlach",
       "type": "revier",
       "city": "Karlsruhe",
@@ -267,11 +267,11 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:05.439Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:58.026Z"
     },
     {
-      "id": "1751216405688",
+      "id": "1751221078201",
       "name": "Polizeirevier Karlsruhe-Marktplatz",
       "type": "revier",
       "city": "Karlsruhe",
@@ -284,11 +284,11 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:05.688Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:58.201Z"
     },
     {
-      "id": "1751216405765",
+      "id": "1751221078438",
       "name": "Polizeiposten Karlsruhe-Oststadt",
       "type": "revier",
       "city": "Karlsruhe",
@@ -301,11 +301,11 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:05.765Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:58.438Z"
     },
     {
-      "id": "1751216406011",
+      "id": "1751221078605",
       "name": "Polizeirevier Karlsruhe-Südweststadt",
       "type": "revier",
       "city": "Karlsruhe",
@@ -318,11 +318,11 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:06.011Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:58.605Z"
     },
     {
-      "id": "1751216406089",
+      "id": "1751221078837",
       "name": "Polizeirevier Karlsruhe-Waldstadt",
       "type": "revier",
       "city": "Karlsruhe",
@@ -335,11 +335,11 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:06.089Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:58.837Z"
     },
     {
-      "id": "1751216406338",
+      "id": "1751221079010",
       "name": "Polizeirevier Karlsruhe-West",
       "type": "revier",
       "city": "Karlsruhe",
@@ -352,11 +352,11 @@
       "email": "karlsruhe@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:06.338Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:59.010Z"
     },
     {
-      "id": "1751216406416",
+      "id": "1751221079208",
       "name": "Polizeirevier Philippsburg",
       "type": "revier",
       "city": "Philippsburg",
@@ -369,11 +369,11 @@
       "email": "philippsburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216404460",
-      "createdAt": "2025-06-29T17:00:06.416Z"
+      "parentId": "1751221076947",
+      "createdAt": "2025-06-29T18:17:59.208Z"
     },
     {
-      "id": "1751216406664",
+      "id": "1751221079411",
       "name": "Polizeipräsidium Mannheim",
       "type": "praesidium",
       "city": "Mannheim",
@@ -386,10 +386,10 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:06.664Z"
+      "createdAt": "2025-06-29T18:17:59.411Z"
     },
     {
-      "id": "1751216406741",
+      "id": "1751221079566",
       "name": "Polizeirevier Eberbach",
       "type": "revier",
       "city": "Eberbach",
@@ -402,11 +402,11 @@
       "email": "eberbach@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:06.741Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:17:59.566Z"
     },
     {
-      "id": "1751216406989",
+      "id": "1751221079788",
       "name": "Polizeirevier Heidelberg-Mitte",
       "type": "revier",
       "city": "Heidelberg",
@@ -419,11 +419,11 @@
       "email": "heidelberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:06.989Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:17:59.788Z"
     },
     {
-      "id": "1751216407066",
+      "id": "1751221079929",
       "name": "Polizeirevier Heidelberg-Nord",
       "type": "revier",
       "city": "Heidelberg",
@@ -436,11 +436,11 @@
       "email": "heidelberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:07.066Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:17:59.929Z"
     },
     {
-      "id": "1751216407317",
+      "id": "1751221080153",
       "name": "Polizeirevier Heidelberg-Süd",
       "type": "revier",
       "city": "Heidelberg",
@@ -453,11 +453,11 @@
       "email": "heidelberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:07.317Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:00.154Z"
     },
     {
-      "id": "1751216407393",
+      "id": "1751221080315",
       "name": "Polizeirevier Hockenheim",
       "type": "revier",
       "city": "Hockenheim",
@@ -470,11 +470,11 @@
       "email": "hockenheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:07.393Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:00.315Z"
     },
     {
-      "id": "1751216407641",
+      "id": "1751221080543",
       "name": "Polizeirevier Ladenburg",
       "type": "revier",
       "city": "Ladenburg",
@@ -487,11 +487,11 @@
       "email": "ladenburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:07.641Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:00.543Z"
     },
     {
-      "id": "1751216407718",
+      "id": "1751221080692",
       "name": "Polizeirevier Mannheim-Innenstadt",
       "type": "revier",
       "city": "Mannheim",
@@ -504,11 +504,11 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:07.718Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:00.692Z"
     },
     {
-      "id": "1751216407966",
+      "id": "1751221080916",
       "name": "Polizeirevier Mannheim-Käfertal",
       "type": "revier",
       "city": "Mannheim",
@@ -521,11 +521,11 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:07.966Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:00.916Z"
     },
     {
-      "id": "1751216408045",
+      "id": "1751221081039",
       "name": "Polizeirevier Mannheim-Neckarau",
       "type": "revier",
       "city": "Mannheim",
@@ -538,11 +538,11 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:08.045Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:01.039Z"
     },
     {
-      "id": "1751216408293",
+      "id": "1751221081294",
       "name": "Polizeirevier Mannheim-Neckarstadt",
       "type": "revier",
       "city": "Mannheim",
@@ -555,11 +555,11 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:08.293Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:01.294Z"
     },
     {
-      "id": "1751216408371",
+      "id": "1751221081432",
       "name": "Polizeirevier Mannheim-Oststadt",
       "type": "revier",
       "city": "Mannheim",
@@ -572,11 +572,11 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:08.371Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:01.432Z"
     },
     {
-      "id": "1751216408618",
+      "id": "1751221081656",
       "name": "Polizeirevier Mannheim-Sandhofen",
       "type": "revier",
       "city": "Mannheim",
@@ -589,11 +589,11 @@
       "email": "mannheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:08.618Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:01.656Z"
     },
     {
-      "id": "1751216408696",
+      "id": "1751221081818",
       "name": "Polizeirevier Neckargemünd",
       "type": "revier",
       "city": "Neckargemünd",
@@ -606,11 +606,11 @@
       "email": "neckargemünd@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:08.696Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:01.818Z"
     },
     {
-      "id": "1751216408943",
+      "id": "1751221082017",
       "name": "Polizeirevier Schwetzingen",
       "type": "revier",
       "city": "Schwetzingen",
@@ -623,11 +623,11 @@
       "email": "schwetzingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:08.943Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:02.017Z"
     },
     {
-      "id": "1751216409020",
+      "id": "1751221082181",
       "name": "Polizeirevier Sinsheim",
       "type": "revier",
       "city": "Sinsheim",
@@ -640,11 +640,11 @@
       "email": "sinsheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:09.020Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:02.181Z"
     },
     {
-      "id": "1751216409270",
+      "id": "1751221082400",
       "name": "Polizeirevier Weinheim",
       "type": "revier",
       "city": "Weinheim",
@@ -657,11 +657,11 @@
       "email": "weinheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:09.270Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:02.400Z"
     },
     {
-      "id": "1751216409341",
+      "id": "1751221082518",
       "name": "Polizeirevier Wiesloch",
       "type": "revier",
       "city": "Wiesloch",
@@ -674,11 +674,11 @@
       "email": "wiesloch@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216406664",
-      "createdAt": "2025-06-29T17:00:09.341Z"
+      "parentId": "1751221079411",
+      "createdAt": "2025-06-29T18:18:02.518Z"
     },
     {
-      "id": "1751216409594",
+      "id": "1751221082746",
       "name": "Polizeipräsidium Freiburg",
       "type": "praesidium",
       "city": "Freiburg im Breisgau",
@@ -691,10 +691,10 @@
       "email": "freiburgimbreisgau@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:09.594Z"
+      "createdAt": "2025-06-29T18:18:02.746Z"
     },
     {
-      "id": "1751216409656",
+      "id": "1751221082887",
       "name": "Polizeirevier Bad Säckingen",
       "type": "revier",
       "city": "Bad Säckingen",
@@ -707,11 +707,11 @@
       "email": "badsäckingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:09.656Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:02.887Z"
     },
     {
-      "id": "1751216409921",
+      "id": "1751221083135",
       "name": "Polizeirevier Breisach",
       "type": "revier",
       "city": "Breisach am Rhein",
@@ -724,11 +724,11 @@
       "email": "breisachamrhein@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:09.921Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:03.135Z"
     },
     {
-      "id": "1751216409970",
+      "id": "1751221083262",
       "name": "Polizeirevier Emmendingen",
       "type": "revier",
       "city": "Emmendingen",
@@ -741,11 +741,11 @@
       "email": "emmendingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:09.970Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:03.262Z"
     },
     {
-      "id": "1751216410242",
+      "id": "1751221083518",
       "name": "Polizeirevier Freiburg -Nord-",
       "type": "revier",
       "city": "Freiburg im Breisgau",
@@ -758,11 +758,11 @@
       "email": "freiburgimbreisgau@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:10.242Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:03.518Z"
     },
     {
-      "id": "1751216410287",
+      "id": "1751221083659",
       "name": "Polizeirevier Freiburg -Süd-",
       "type": "revier",
       "city": "Freiburg im Breisgau",
@@ -775,11 +775,11 @@
       "email": "freiburgimbreisgau@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:10.287Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:03.659Z"
     },
     {
-      "id": "1751216410567",
+      "id": "1751221083874",
       "name": "Polizeirevier Lörrach",
       "type": "revier",
       "city": "Lörrach",
@@ -792,11 +792,11 @@
       "email": "lörrach@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:10.567Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:03.874Z"
     },
     {
-      "id": "1751216410612",
+      "id": "1751221084019",
       "name": "Polizeirevier Müllheim",
       "type": "revier",
       "city": "Müllheim",
@@ -809,11 +809,11 @@
       "email": "müllheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:10.612Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:04.019Z"
     },
     {
-      "id": "1751216410890",
+      "id": "1751221084217",
       "name": "Polizeirevier Rheinfelden (Baden)",
       "type": "revier",
       "city": "Rheinfelden (Baden)",
@@ -826,11 +826,11 @@
       "email": "rheinfelden(baden)@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:10.890Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:04.217Z"
     },
     {
-      "id": "1751216410936",
+      "id": "1751221084351",
       "name": "Polizeirevier Schopfheim",
       "type": "revier",
       "city": "Schopfheim",
@@ -843,11 +843,11 @@
       "email": "schopfheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:10.936Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:04.351Z"
     },
     {
-      "id": "1751216411216",
+      "id": "1751221084553",
       "name": "Polizeirevier Titisee-Neustadt",
       "type": "revier",
       "city": "Titisee-Neustadt",
@@ -860,11 +860,11 @@
       "email": "titisee-neustadt@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:11.216Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:04.553Z"
     },
     {
-      "id": "1751216411262",
+      "id": "1751221084691",
       "name": "Polizeirevier Waldkirch",
       "type": "revier",
       "city": "Waldkirch",
@@ -877,11 +877,11 @@
       "email": "waldkirch@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:11.262Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:04.691Z"
     },
     {
-      "id": "1751216411543",
+      "id": "1751221084888",
       "name": "Polizeirevier Waldshut-Tiengen",
       "type": "revier",
       "city": "Waldshut-Tiengen",
@@ -894,11 +894,11 @@
       "email": "waldshut-tiengen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:11.543Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:04.888Z"
     },
     {
-      "id": "1751216411590",
+      "id": "1751221085029",
       "name": "Polizeirevier Weil am Rhein",
       "type": "revier",
       "city": "Weil am Rhein",
@@ -911,11 +911,11 @@
       "email": "weilamrhein@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:11.590Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:05.029Z"
     },
     {
-      "id": "1751216411866",
+      "id": "1751221085270",
       "name": "Polizeirevier Sankt Georgen im Schwarzwald",
       "type": "revier",
       "city": "Sankt Georgen im Schwarzwald",
@@ -928,11 +928,11 @@
       "email": "sanktgeorgenimschwarzwald@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216409594",
-      "createdAt": "2025-06-29T17:00:11.866Z"
+      "parentId": "1751221082746",
+      "createdAt": "2025-06-29T18:18:05.270Z"
     },
     {
-      "id": "1751216411912",
+      "id": "1751221085368",
       "name": "Polizeipräsidium Heilbronn",
       "type": "praesidium",
       "city": "Heilbronn",
@@ -945,10 +945,10 @@
       "email": "heilbronn@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:11.912Z"
+      "createdAt": "2025-06-29T18:18:05.368Z"
     },
     {
-      "id": "1751216412190",
+      "id": "1751221085605",
       "name": "Polizeirevier Bad Mergentheim",
       "type": "revier",
       "city": "Bad Mergentheim",
@@ -961,11 +961,11 @@
       "email": "badmergentheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:12.190Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:05.605Z"
     },
     {
-      "id": "1751216412236",
+      "id": "1751221085708",
       "name": "Polizeirevier Buchen",
       "type": "revier",
       "city": "Buchen (Odenwald)",
@@ -978,11 +978,11 @@
       "email": "buchen(odenwald)@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:12.236Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:05.708Z"
     },
     {
-      "id": "1751216412516",
+      "id": "1751221085940",
       "name": "Polizeirevier Eppingen",
       "type": "revier",
       "city": "Eppingen",
@@ -995,11 +995,11 @@
       "email": "eppingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:12.516Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:05.940Z"
     },
     {
-      "id": "1751216412562",
+      "id": "1751221086036",
       "name": "Polizeirevier Heilbronn",
       "type": "revier",
       "city": "Heilbronn",
@@ -1012,11 +1012,11 @@
       "email": "heilbronn@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:12.562Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:06.036Z"
     },
     {
-      "id": "1751216412839",
+      "id": "1751221086282",
       "name": "Polizeirevier Heilbronn-Böckingen",
       "type": "revier",
       "city": "Heilbronn",
@@ -1029,11 +1029,11 @@
       "email": "heilbronn@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:12.839Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:06.282Z"
     },
     {
-      "id": "1751216412885",
+      "id": "1751221086368",
       "name": "Polizeirevier Künzelsau",
       "type": "revier",
       "city": "Künzelsau",
@@ -1046,11 +1046,11 @@
       "email": "künzelsau@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:12.885Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:06.368Z"
     },
     {
-      "id": "1751216413157",
+      "id": "1751221086610",
       "name": "Polizeirevier Lauffen",
       "type": "revier",
       "city": "Lauffen am Neckar",
@@ -1063,11 +1063,11 @@
       "email": "lauffenamneckar@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:13.157Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:06.610Z"
     },
     {
-      "id": "1751216413213",
+      "id": "1751221086699",
       "name": "Polizeirevier Mosbach",
       "type": "revier",
       "city": "Mosbach",
@@ -1080,11 +1080,11 @@
       "email": "mosbach@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:13.214Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:06.699Z"
     },
     {
-      "id": "1751216413475",
+      "id": "1751221086947",
       "name": "Polizeirevier Neckarsulm",
       "type": "revier",
       "city": "Neckarsulm",
@@ -1097,11 +1097,11 @@
       "email": "neckarsulm@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:13.475Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:06.947Z"
     },
     {
-      "id": "1751216413539",
+      "id": "1751221087031",
       "name": "Polizeirevier Öhringen",
       "type": "revier",
       "city": "Öhringen",
@@ -1114,11 +1114,11 @@
       "email": "öhringen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:13.539Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:07.031Z"
     },
     {
-      "id": "1751216413793",
+      "id": "1751221087303",
       "name": "Polizeirevier Tauberbischofsheim",
       "type": "revier",
       "city": "Tauberbischofsheim",
@@ -1131,11 +1131,11 @@
       "email": "tauberbischofsheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:13.793Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:07.303Z"
     },
     {
-      "id": "1751216413861",
+      "id": "1751221087365",
       "name": "Polizeirevier Weinsberg",
       "type": "revier",
       "city": "Weinsberg",
@@ -1148,11 +1148,11 @@
       "email": "weinsberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:13.861Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:07.365Z"
     },
     {
-      "id": "1751216414112",
+      "id": "1751221087635",
       "name": "Polizeirevier Wertheim",
       "type": "revier",
       "city": "Wertheim",
@@ -1165,11 +1165,11 @@
       "email": "wertheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216411912",
-      "createdAt": "2025-06-29T17:00:14.113Z"
+      "parentId": "1751221085368",
+      "createdAt": "2025-06-29T18:18:07.635Z"
     },
     {
-      "id": "1751216414187",
+      "id": "1751221087701",
       "name": "Polizeipräsidium Konstanz",
       "type": "praesidium",
       "city": "Konstanz",
@@ -1182,10 +1182,10 @@
       "email": "konstanz@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:14.187Z"
+      "createdAt": "2025-06-29T18:18:07.701Z"
     },
     {
-      "id": "1751216414437",
+      "id": "1751221087955",
       "name": "Polizeirevier Friedrichshafen",
       "type": "revier",
       "city": "Friedrichshafen",
@@ -1198,11 +1198,11 @@
       "email": "friedrichshafen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:14.437Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:07.955Z"
     },
     {
-      "id": "1751216414516",
+      "id": "1751221088030",
       "name": "Polizeirevier Konstanz",
       "type": "revier",
       "city": "Konstanz",
@@ -1215,11 +1215,11 @@
       "email": "konstanz@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:14.516Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:08.030Z"
     },
     {
-      "id": "1751216414763",
+      "id": "1751221088277",
       "name": "Polizeirevier Radolfzell am Bodensee",
       "type": "revier",
       "city": "Radolfzell am Bodensee",
@@ -1232,11 +1232,11 @@
       "email": "radolfzellambodensee@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:14.763Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:08.277Z"
     },
     {
-      "id": "1751216414841",
+      "id": "1751221088356",
       "name": "Polizeirevier Singen",
       "type": "revier",
       "city": "Singen (Hohentwiel)",
@@ -1249,11 +1249,11 @@
       "email": "singen(hohentwiel)@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:14.841Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:08.356Z"
     },
     {
-      "id": "1751216415089",
+      "id": "1751221088606",
       "name": "Polizeirevier Stockach",
       "type": "revier",
       "city": "Stockach",
@@ -1266,11 +1266,11 @@
       "email": "stockach@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:15.089Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:08.606Z"
     },
     {
-      "id": "1751216415166",
+      "id": "1751221088683",
       "name": "Polizeirevier Donaueschingen",
       "type": "revier",
       "city": "Donaueschingen",
@@ -1283,11 +1283,11 @@
       "email": "donaueschingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:15.166Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:08.683Z"
     },
     {
-      "id": "1751216415405",
+      "id": "1751221088929",
       "name": "Polizeirevier Oberndorf am Neckar",
       "type": "revier",
       "city": "Oberndorf am Neckar",
@@ -1300,11 +1300,11 @@
       "email": "oberndorfamneckar@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:15.405Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:08.929Z"
     },
     {
-      "id": "1751216415492",
+      "id": "1751221089007",
       "name": "Polizeirevier Rottweil",
       "type": "revier",
       "city": "Rottweil",
@@ -1317,11 +1317,11 @@
       "email": "rottweil@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:15.492Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:09.007Z"
     },
     {
-      "id": "1751216415726",
+      "id": "1751221089251",
       "name": "Polizeirevier Schramberg",
       "type": "revier",
       "city": "Schramberg",
@@ -1334,11 +1334,11 @@
       "email": "schramberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:15.726Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:09.251Z"
     },
     {
-      "id": "1751216415817",
+      "id": "1751221089333",
       "name": "Polizeirevier Schwenningen",
       "type": "revier",
       "city": "Villingen-Schwenningen",
@@ -1351,11 +1351,11 @@
       "email": "villingen-schwenningen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:15.817Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:09.333Z"
     },
     {
-      "id": "1751216416050",
+      "id": "1751221089587",
       "name": "Polizeirevier Spaichingen",
       "type": "revier",
       "city": "Spaichingen",
@@ -1368,11 +1368,11 @@
       "email": "spaichingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:16.050Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:09.587Z"
     },
     {
-      "id": "1751216416142",
+      "id": "1751221089663",
       "name": "Polizeirevier Tuttlingen",
       "type": "revier",
       "city": "Tuttlingen",
@@ -1385,11 +1385,11 @@
       "email": "tuttlingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:16.142Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:09.663Z"
     },
     {
-      "id": "1751216416373",
+      "id": "1751221089913",
       "name": "Polizeirevier Villingen",
       "type": "revier",
       "city": "Villingen-Schwenningen",
@@ -1402,11 +1402,11 @@
       "email": "villingen-schwenningen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216414187",
-      "createdAt": "2025-06-29T17:00:16.373Z"
+      "parentId": "1751221087701",
+      "createdAt": "2025-06-29T18:18:09.913Z"
     },
     {
-      "id": "1751216416455",
+      "id": "1751221089988",
       "name": "Polizeipräsidium Ludwigsburg",
       "type": "praesidium",
       "city": "Ludwigsburg",
@@ -1419,10 +1419,10 @@
       "email": "ludwigsburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:16.455Z"
+      "createdAt": "2025-06-29T18:18:09.988Z"
     },
     {
-      "id": "1751216416692",
+      "id": "1751221090241",
       "name": "Polizeirevier Bietigheim-Bissingen",
       "type": "revier",
       "city": "Bietigheim-Bissingen",
@@ -1435,11 +1435,11 @@
       "email": "bietigheim-bissingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:16.692Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:10.241Z"
     },
     {
-      "id": "1751216416780",
+      "id": "1751221090319",
       "name": "Polizeirevier Böblingen",
       "type": "revier",
       "city": "Böblingen",
@@ -1452,11 +1452,11 @@
       "email": "böblingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:16.780Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:10.319Z"
     },
     {
-      "id": "1751216417027",
+      "id": "1751221090580",
       "name": "Polizeirevier Ditzingen",
       "type": "revier",
       "city": "Ditzingen",
@@ -1469,11 +1469,11 @@
       "email": "ditzingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:17.027Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:10.580Z"
     },
     {
-      "id": "1751216417104",
+      "id": "1751221090649",
       "name": "Polizeirevier Herrenberg",
       "type": "revier",
       "city": "Herrenberg",
@@ -1486,11 +1486,11 @@
       "email": "herrenberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:17.104Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:10.649Z"
     },
     {
-      "id": "1751216417354",
+      "id": "1751221090921",
       "name": "Polizeirevier Kornwestheim",
       "type": "revier",
       "city": "Kornwestheim",
@@ -1503,11 +1503,11 @@
       "email": "kornwestheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:17.354Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:10.921Z"
     },
     {
-      "id": "1751216417419",
+      "id": "1751221090985",
       "name": "Polizeirevier Leonberg",
       "type": "revier",
       "city": "Leonberg",
@@ -1520,11 +1520,11 @@
       "email": "leonberg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:17.419Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:10.985Z"
     },
     {
-      "id": "1751216417683",
+      "id": "1751221091262",
       "name": "Polizeirevier Ludwigsburg",
       "type": "revier",
       "city": "Ludwigsburg",
@@ -1537,11 +1537,11 @@
       "email": "ludwigsburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:17.683Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:11.262Z"
     },
     {
-      "id": "1751216417745",
+      "id": "1751221091308",
       "name": "Polizeirevier Marbach am Neckar",
       "type": "revier",
       "city": "Marbach am Neckar",
@@ -1554,11 +1554,11 @@
       "email": "marbachamneckar@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:17.745Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:11.308Z"
     },
     {
-      "id": "1751216418006",
+      "id": "1751221091586",
       "name": "Polizeirevier Sindelfingen",
       "type": "revier",
       "city": "Sindelfingen",
@@ -1571,11 +1571,11 @@
       "email": "sindelfingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:18.006Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:11.586Z"
     },
     {
-      "id": "1751216418068",
+      "id": "1751221091635",
       "name": "Polizeirevier Vaihingen an der Enz",
       "type": "revier",
       "city": "Vaihingen an der Enz",
@@ -1588,11 +1588,11 @@
       "email": "vaihingenanderenz@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216416455",
-      "createdAt": "2025-06-29T17:00:18.068Z"
+      "parentId": "1751221089988",
+      "createdAt": "2025-06-29T18:18:11.635Z"
     },
     {
-      "id": "1751216418318",
+      "id": "1751221091915",
       "name": "Polizeipräsidium Offenburg",
       "type": "praesidium",
       "city": "Offenburg",
@@ -1605,10 +1605,10 @@
       "email": "offenburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:18.318Z"
+      "createdAt": "2025-06-29T18:18:11.915Z"
     },
     {
-      "id": "1751216418395",
+      "id": "1751221091966",
       "name": "Polizeirevier Achern/Oberkirch",
       "type": "revier",
       "city": "Achern",
@@ -1621,11 +1621,11 @@
       "email": "achern@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:18.395Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:11.966Z"
     },
     {
-      "id": "1751216418644",
+      "id": "1751221092245",
       "name": "Polizeirevier Baden-Baden",
       "type": "revier",
       "city": "Baden-Baden",
@@ -1638,11 +1638,11 @@
       "email": "baden-baden@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:18.644Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:12.245Z"
     },
     {
-      "id": "1751216418708",
+      "id": "1751221092300",
       "name": "Polizeirevier Bühl",
       "type": "revier",
       "city": "Bühl",
@@ -1655,11 +1655,11 @@
       "email": "bühl@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:18.708Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:12.300Z"
     },
     {
-      "id": "1751216418992",
+      "id": "1751221092569",
       "name": "Polizeirevier Gaggenau",
       "type": "revier",
       "city": "Gaggenau",
@@ -1672,11 +1672,11 @@
       "email": "gaggenau@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:18.992Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:12.569Z"
     },
     {
-      "id": "1751216419102",
+      "id": "1751221092630",
       "name": "Polizeirevier Haslach i. K.",
       "type": "revier",
       "city": "Haslach im Kinzigtal",
@@ -1689,11 +1689,11 @@
       "email": "haslachimkinzigtal@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:19.102Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:12.630Z"
     },
     {
-      "id": "1751216419312",
+      "id": "1751221092906",
       "name": "Polizeirevier Kehl",
       "type": "revier",
       "city": "Kehl",
@@ -1706,11 +1706,11 @@
       "email": "kehl@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:19.312Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:12.906Z"
     },
     {
-      "id": "1751216419423",
+      "id": "1751221092954",
       "name": "Polizeirevier Lahr",
       "type": "revier",
       "city": "Lahr/Schwarzwald",
@@ -1723,11 +1723,11 @@
       "email": "lahr/schwarzwald@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:19.423Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:12.954Z"
     },
     {
-      "id": "1751216419640",
+      "id": "1751221093234",
       "name": "Polizeirevier Offenburg",
       "type": "revier",
       "city": "Offenburg",
@@ -1740,11 +1740,11 @@
       "email": "offenburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:19.640Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:13.234Z"
     },
     {
-      "id": "1751216419749",
+      "id": "1751221093279",
       "name": "Polizeirevier Rastatt",
       "type": "revier",
       "city": "Rastatt",
@@ -1757,11 +1757,11 @@
       "email": "rastatt@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216418318",
-      "createdAt": "2025-06-29T17:00:19.749Z"
+      "parentId": "1751221091915",
+      "createdAt": "2025-06-29T18:18:13.279Z"
     },
     {
-      "id": "1751216419962",
+      "id": "1751221093558",
       "name": "Polizeipräsidium Pforzheim",
       "type": "praesidium",
       "city": "Pforzheim",
@@ -1774,10 +1774,10 @@
       "email": "pforzheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:19.962Z"
+      "createdAt": "2025-06-29T18:18:13.558Z"
     },
     {
-      "id": "1751216420071",
+      "id": "1751221093605",
       "name": "Polizeirevier Mühlacker",
       "type": "revier",
       "city": "Mühlacker",
@@ -1790,11 +1790,11 @@
       "email": "mühlacker@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:20.071Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:13.605Z"
     },
     {
-      "id": "1751216420287",
+      "id": "1751221093886",
       "name": "Polizeirevier Nagold",
       "type": "revier",
       "city": "Nagold",
@@ -1807,11 +1807,11 @@
       "email": "nagold@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:20.287Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:13.886Z"
     },
     {
-      "id": "1751216420394",
+      "id": "1751221093934",
       "name": "Polizeirevier Neuenbürg",
       "type": "revier",
       "city": "Neuenbürg",
@@ -1824,11 +1824,11 @@
       "email": "neuenbürg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:20.394Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:13.934Z"
     },
     {
-      "id": "1751216420611",
+      "id": "1751221094211",
       "name": "Polizeirevier Pforzheim-Nord",
       "type": "revier",
       "city": "Pforzheim",
@@ -1841,11 +1841,11 @@
       "email": "pforzheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:20.611Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:14.211Z"
     },
     {
-      "id": "1751216420720",
+      "id": "1751221094273",
       "name": "Polizeirevier Pforzheim-Süd",
       "type": "revier",
       "city": "Pforzheim",
@@ -1858,11 +1858,11 @@
       "email": "pforzheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:20.720Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:14.273Z"
     },
     {
-      "id": "1751216420938",
+      "id": "1751221094527",
       "name": "Polizeirevier Freudenstadt",
       "type": "revier",
       "city": "Freudenstadt",
@@ -1875,11 +1875,11 @@
       "email": "freudenstadt@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:20.938Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:14.527Z"
     },
     {
-      "id": "1751216421046",
+      "id": "1751221094596",
       "name": "Polizeirevier Horb am Neckar",
       "type": "revier",
       "city": "Horb am Neckar",
@@ -1892,11 +1892,11 @@
       "email": "horbamneckar@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216419962",
-      "createdAt": "2025-06-29T17:00:21.046Z"
+      "parentId": "1751221093558",
+      "createdAt": "2025-06-29T18:18:14.596Z"
     },
     {
-      "id": "1751216421264",
+      "id": "1751221094860",
       "name": "Polizeipräsidium Ravensburg",
       "type": "praesidium",
       "city": "Ravensburg",
@@ -1909,10 +1909,10 @@
       "email": "ravensburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:21.264Z"
+      "createdAt": "2025-06-29T18:18:14.860Z"
     },
     {
-      "id": "1751216421370",
+      "id": "1751221094981",
       "name": "Polizeirevier Bad Saulgau",
       "type": "revier",
       "city": "Bad Saulgau",
@@ -1925,11 +1925,11 @@
       "email": "badsaulgau@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:21.370Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:14.981Z"
     },
     {
-      "id": "1751216421587",
+      "id": "1751221095184",
       "name": "Polizeirevier Leutkirch",
       "type": "revier",
       "city": "Leutkirch im Allgäu",
@@ -1942,11 +1942,11 @@
       "email": "leutkirchimallgäu@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:21.587Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:15.184Z"
     },
     {
-      "id": "1751216421697",
+      "id": "1751221095306",
       "name": "Polizeirevier Ravensburg",
       "type": "revier",
       "city": "Ravensburg",
@@ -1959,11 +1959,11 @@
       "email": "ravensburg@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:21.697Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:15.307Z"
     },
     {
-      "id": "1751216421913",
+      "id": "1751221095511",
       "name": "Polizeirevier Sigmaringen",
       "type": "revier",
       "city": "Sigmaringen",
@@ -1976,11 +1976,11 @@
       "email": "sigmaringen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:21.913Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:15.511Z"
     },
     {
-      "id": "1751216422022",
+      "id": "1751221095634",
       "name": "Polizeirevier Überlingen",
       "type": "revier",
       "city": "Überlingen",
@@ -1993,11 +1993,11 @@
       "email": "überlingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:22.022Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:15.634Z"
     },
     {
-      "id": "1751216422238",
+      "id": "1751221095837",
       "name": "Polizeirevier Wangen im Allgäu",
       "type": "revier",
       "city": "Wangen im Allgäu",
@@ -2010,11 +2010,11 @@
       "email": "wangenimallgäu@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:22.238Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:15.837Z"
     },
     {
-      "id": "1751216422346",
+      "id": "1751221095961",
       "name": "Polizeirevier Weingarten",
       "type": "revier",
       "city": "Weingarten",
@@ -2027,11 +2027,11 @@
       "email": "weingarten@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216421264",
-      "createdAt": "2025-06-29T17:00:22.346Z"
+      "parentId": "1751221094860",
+      "createdAt": "2025-06-29T18:18:15.961Z"
     },
     {
-      "id": "1751216422563",
+      "id": "1751221096162",
       "name": "Polizeipräsidium Reutlingen",
       "type": "praesidium",
       "city": "Reutlingen",
@@ -2044,10 +2044,10 @@
       "email": "reutlingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:22.563Z"
+      "createdAt": "2025-06-29T18:18:16.162Z"
     },
     {
-      "id": "1751216422674",
+      "id": "1751221096287",
       "name": "Polizeirevier Esslingen",
       "type": "revier",
       "city": "Esslingen am Neckar",
@@ -2060,11 +2060,11 @@
       "email": "esslingenamneckar@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:22.674Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:16.287Z"
     },
     {
-      "id": "1751216422890",
+      "id": "1751221096491",
       "name": "Polizeirevier Filderstadt",
       "type": "revier",
       "city": "Filderstadt",
@@ -2077,11 +2077,11 @@
       "email": "filderstadt@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:22.891Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:16.491Z"
     },
     {
-      "id": "1751216423002",
+      "id": "1751221096614",
       "name": "Polizeirevier Flughafen Stuttgart",
       "type": "revier",
       "city": "Stuttgart",
@@ -2094,11 +2094,11 @@
       "email": "stuttgart@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.002Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:16.614Z"
     },
     {
-      "id": "1751216423219",
+      "id": "1751221096818",
       "name": "Polizeirevier Kirchheim unter Teck",
       "type": "revier",
       "city": "Kirchheim unter Teck",
@@ -2111,11 +2111,11 @@
       "email": "kirchheimunterteck@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.219Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:16.818Z"
     },
     {
-      "id": "1751216423327",
+      "id": "1751221096941",
       "name": "Polizeirevier Metzingen",
       "type": "revier",
       "city": "Metzingen",
@@ -2128,11 +2128,11 @@
       "email": "metzingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.327Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:16.941Z"
     },
     {
-      "id": "1751216423543",
+      "id": "1751221097146",
       "name": "Polizeirevier Münsingen",
       "type": "revier",
       "city": "Münsingen",
@@ -2145,11 +2145,11 @@
       "email": "münsingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.543Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:17.146Z"
     },
     {
-      "id": "1751216423653",
+      "id": "1751221097271",
       "name": "Polizeirevier Nürtingen",
       "type": "revier",
       "city": "Nürtingen",
@@ -2162,11 +2162,11 @@
       "email": "nürtingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.653Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:17.271Z"
     },
     {
-      "id": "1751216423869",
+      "id": "1751221097461",
       "name": "Polizeirevier Pfullingen",
       "type": "revier",
       "city": "Pfullingen",
@@ -2179,11 +2179,11 @@
       "email": "pfullingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.869Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:17.461Z"
     },
     {
-      "id": "1751216423978",
+      "id": "1751221097596",
       "name": "Polizeirevier Reutlingen",
       "type": "revier",
       "city": "Reutlingen",
@@ -2196,11 +2196,11 @@
       "email": "reutlingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:23.978Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:17.596Z"
     },
     {
-      "id": "1751216424196",
+      "id": "1751221097783",
       "name": "Polizeirevier Rottenburg",
       "type": "revier",
       "city": "Rottenburg am Neckar",
@@ -2213,11 +2213,11 @@
       "email": "rottenburgamneckar@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:24.196Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:17.783Z"
     },
     {
-      "id": "1751216424305",
+      "id": "1751221097923",
       "name": "Polizeirevier Tübingen",
       "type": "revier",
       "city": "Tübingen",
@@ -2230,11 +2230,11 @@
       "email": "tübingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:24.305Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:17.923Z"
     },
     {
-      "id": "1751216424524",
+      "id": "1751221098109",
       "name": "Polizeirevier Albstadt",
       "type": "revier",
       "city": "Albstadt",
@@ -2247,11 +2247,11 @@
       "email": "albstadt@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:24.524Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:18.109Z"
     },
     {
-      "id": "1751216424630",
+      "id": "1751221098250",
       "name": "Polizeirevier Balingen",
       "type": "revier",
       "city": "Balingen",
@@ -2264,11 +2264,11 @@
       "email": "balingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:24.630Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:18.250Z"
     },
     {
-      "id": "1751216424845",
+      "id": "1751221098434",
       "name": "Polizeirevier Hechingen",
       "type": "revier",
       "city": "Hechingen",
@@ -2281,11 +2281,11 @@
       "email": "hechingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216422563",
-      "createdAt": "2025-06-29T17:00:24.845Z"
+      "parentId": "1751221096162",
+      "createdAt": "2025-06-29T18:18:18.434Z"
     },
     {
-      "id": "1751216424953",
+      "id": "1751221098577",
       "name": "Polizeipräsidium Ulm",
       "type": "praesidium",
       "city": "Ulm",
@@ -2298,10 +2298,10 @@
       "email": "ulm@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:24.953Z"
+      "createdAt": "2025-06-29T18:18:18.577Z"
     },
     {
-      "id": "1751216425173",
+      "id": "1751221098763",
       "name": "Polizeirevier Biberach",
       "type": "revier",
       "city": "Biberach an der Riß",
@@ -2314,11 +2314,11 @@
       "email": "biberachanderriß@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:25.173Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:18.763Z"
     },
     {
-      "id": "1751216425267",
+      "id": "1751221098902",
       "name": "Polizeirevier Ehingen",
       "type": "revier",
       "city": "Ehingen (Donau)",
@@ -2331,11 +2331,11 @@
       "email": "ehingen(donau)@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:25.267Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:18.902Z"
     },
     {
-      "id": "1751216425499",
+      "id": "1751221099087",
       "name": "Polizeirevier Eislingen",
       "type": "revier",
       "city": "Eislingen/Fils",
@@ -2348,11 +2348,11 @@
       "email": "eislingen/fils@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:25.499Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:19.087Z"
     },
     {
-      "id": "1751216425595",
+      "id": "1751221099223",
       "name": "Polizeirevier Geislingen an der Steige",
       "type": "revier",
       "city": "Geislingen an der Steige",
@@ -2365,11 +2365,11 @@
       "email": "geislingenandersteige@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:25.595Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:19.223Z"
     },
     {
-      "id": "1751216425827",
+      "id": "1751221099406",
       "name": "Polizeirevier Giengen an der Brenz",
       "type": "revier",
       "city": "Giengen an der Brenz",
@@ -2382,11 +2382,11 @@
       "email": "giengenanderbrenz@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:25.827Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:19.406Z"
     },
     {
-      "id": "1751216425923",
+      "id": "1751221099543",
       "name": "Polizeirevier Göppingen",
       "type": "revier",
       "city": "Göppingen",
@@ -2399,11 +2399,11 @@
       "email": "göppingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:25.923Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:19.543Z"
     },
     {
-      "id": "1751216426152",
+      "id": "1751221099733",
       "name": "Polizeirevier Laupheim",
       "type": "revier",
       "city": "Laupheim",
@@ -2416,11 +2416,11 @@
       "email": "laupheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:26.152Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:19.733Z"
     },
     {
-      "id": "1751216426245",
+      "id": "1751221099864",
       "name": "Polizeirevier Riedlingen",
       "type": "revier",
       "city": "Riedlingen",
@@ -2433,11 +2433,11 @@
       "email": "riedlingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:26.245Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:19.864Z"
     },
     {
-      "id": "1751216426477",
+      "id": "1751221100060",
       "name": "Polizeirevier Uhingen",
       "type": "revier",
       "city": "Uhingen",
@@ -2450,11 +2450,11 @@
       "email": "uhingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:26.477Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:20.060Z"
     },
     {
-      "id": "1751216426572",
+      "id": "1751221100260",
       "name": "Polizeirevier Ulm-Mitte",
       "type": "revier",
       "city": "Ulm",
@@ -2467,11 +2467,11 @@
       "email": "ulm@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:26.572Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:20.260Z"
     },
     {
-      "id": "1751216426804",
+      "id": "1751221100382",
       "name": "Polizeirevier Ulm-West",
       "type": "revier",
       "city": "Ulm",
@@ -2484,11 +2484,11 @@
       "email": "ulm@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216424953",
-      "createdAt": "2025-06-29T17:00:26.804Z"
+      "parentId": "1751221098577",
+      "createdAt": "2025-06-29T18:18:20.382Z"
     },
     {
-      "id": "1751216426896",
+      "id": "1751221100584",
       "name": "Polizeipräsidium Aalen",
       "type": "praesidium",
       "city": "Aalen",
@@ -2501,10 +2501,10 @@
       "email": "aalen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "createdAt": "2025-06-29T17:00:26.896Z"
+      "createdAt": "2025-06-29T18:18:20.584Z"
     },
     {
-      "id": "1751216427127",
+      "id": "1751221100708",
       "name": "Polizeirevier Aalen",
       "type": "revier",
       "city": "Aalen",
@@ -2517,11 +2517,11 @@
       "email": "aalen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:27.127Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:20.708Z"
     },
     {
-      "id": "1751216427222",
+      "id": "1751221100910",
       "name": "Polizeirevier Backnang",
       "type": "revier",
       "city": "Backnang",
@@ -2534,11 +2534,11 @@
       "email": "backnang@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:27.222Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:20.910Z"
     },
     {
-      "id": "1751216427454",
+      "id": "1751221101044",
       "name": "Polizeirevier Crailsheim",
       "type": "revier",
       "city": "Crailsheim",
@@ -2551,11 +2551,11 @@
       "email": "crailsheim@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:27.454Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:21.044Z"
     },
     {
-      "id": "1751216427547",
+      "id": "1751221101257",
       "name": "Polizeirevier Ellwangen",
       "type": "revier",
       "city": "Ellwangen (Jagst)",
@@ -2568,11 +2568,11 @@
       "email": "ellwangen(jagst)@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:27.547Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:21.257Z"
     },
     {
-      "id": "1751216427781",
+      "id": "1751221101393",
       "name": "Polizeirevier Fellbach",
       "type": "revier",
       "city": "Fellbach",
@@ -2585,11 +2585,11 @@
       "email": "fellbach@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:27.781Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:21.393Z"
     },
     {
-      "id": "1751216427874",
+      "id": "1751221101588",
       "name": "Polizeirevier Schorndorf",
       "type": "revier",
       "city": "Schorndorf",
@@ -2602,11 +2602,11 @@
       "email": "schorndorf@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:27.874Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:21.588Z"
     },
     {
-      "id": "1751216428105",
+      "id": "1751221101721",
       "name": "Polizeirevier Schwäbisch Gmünd",
       "type": "revier",
       "city": "Schwäbisch Gmünd",
@@ -2619,11 +2619,11 @@
       "email": "schwäbischgmünd@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:28.105Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:21.721Z"
     },
     {
-      "id": "1751216428200",
+      "id": "1751221101973",
       "name": "Polizeirevier Schwäbisch Hall",
       "type": "revier",
       "city": "Schwäbisch Hall",
@@ -2636,11 +2636,11 @@
       "email": "schwäbischhall@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:28.200Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:21.973Z"
     },
     {
-      "id": "1751216428432",
+      "id": "1751221102051",
       "name": "Polizeirevier Waiblingen",
       "type": "revier",
       "city": "Waiblingen",
@@ -2653,11 +2653,11 @@
       "email": "waiblingen@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:28.432Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:22.051Z"
     },
     {
-      "id": "1751216428524",
+      "id": "1751221102300",
       "name": "Polizeirevier Winnenden",
       "type": "revier",
       "city": "Winnenden",
@@ -2670,10 +2670,10 @@
       "email": "winnenden@polizei.bwl.de",
       "notdienst24h": false,
       "isActive": true,
-      "parentId": "1751216426896",
-      "createdAt": "2025-06-29T17:00:28.524Z"
+      "parentId": "1751221100584",
+      "createdAt": "2025-06-29T18:18:22.300Z"
     }
   ],
   "addresses": [],
-  "lastModified": "2025-06-29T17:00:28.524Z"
+  "lastModified": "2025-06-29T18:18:22.300Z"
 }

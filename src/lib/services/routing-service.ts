@@ -56,7 +56,11 @@ interface RoutingMetrics {
 }
 
 class RoutingService {
-	// Erweiterte API-URLs mit Prioritätsreihenfolge
+	// Lokaler OSRM-Server hat höchste Priorität
+	private readonly OFFLINE_ROUTING_URL = "http://localhost:5000"; // Lokaler OSRM-Server
+	private offlineRoutingAvailable = false;
+
+	// Erweiterte API-URLs mit Prioritätsreihenfolge (nur als Fallback)
 	private readonly ROUTING_PROVIDERS = [
 		{
 			name: "OSRM-Main",
@@ -89,10 +93,6 @@ class RoutingService {
 	private readonly routeCache: Map<string, CacheEntry> = new Map();
 	private readonly MAX_CACHE_SIZE = 200;
 	private readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 Stunden
-
-	// Offline-Routing mit OSRM-Daten
-	private readonly OFFLINE_ROUTING_URL = "http://localhost:5000"; // Lokaler OSRM-Server
-	private offlineRoutingAvailable = false;
 
 	// Metrics für Performance-Tracking
 	private readonly metrics: RoutingMetrics[] = [];
@@ -231,27 +231,27 @@ class RoutingService {
 			return { ...cached, provider: "Cached" };
 		}
 
-		// Offline-Routing zuerst versuchen (falls verfügbar)
-		if (this.offlineRoutingAvailable) {
-			try {
-				const startTime = Date.now();
-				const offlineRoute = await this.calculateWithOfflineOSRM(
-					start,
-					end,
-					options.profile,
-				);
-				const duration = Date.now() - startTime;
+		// Lokaler OSRM-Server hat immer höchste Priorität
+		try {
+			const startTime = Date.now();
+			const offlineRoute = await this.calculateWithOfflineOSRM(
+				start,
+				end,
+				options.profile,
+			);
+			const duration = Date.now() - startTime;
 
-				this.trackRoutingMetrics("Offline-OSRM", true, duration);
-				this.saveToCache(cacheKey, offlineRoute);
-				return { ...offlineRoute, provider: "Offline-OSRM" };
-			} catch (error) {
-				console.warn("Offline-Routing fehlgeschlagen:", error);
-				this.trackRoutingError("Offline-OSRM", error);
-			}
+			this.trackRoutingMetrics("Local-OSRM", true, duration);
+			this.saveToCache(cacheKey, offlineRoute);
+			this.offlineRoutingAvailable = true; // Markiere als verfügbar
+			return { ...offlineRoute, provider: "Local-OSRM" };
+		} catch (error) {
+			console.warn("Lokaler OSRM-Server nicht verfügbar:", error);
+			this.trackRoutingError("Local-OSRM", error);
+			this.offlineRoutingAvailable = false;
 		}
 
-		// Online-Provider in Prioritätsreihenfolge versuchen
+		// Online-Provider in Prioritätsreihenfolge versuchen (nur als Fallback)
 		for (const provider of this.ROUTING_PROVIDERS) {
 			try {
 				const startTime = Date.now();
@@ -314,7 +314,15 @@ class RoutingService {
 	): Promise<RouteResponse> {
 		const url = `${this.OFFLINE_ROUTING_URL}/route/v1/${profile}/${start.lng},${start.lat};${end.lng},${end.lat}`;
 
-		const response = await fetch(url, {
+		const params = new URLSearchParams({
+			overview: "full",
+			geometries: "geojson",
+			steps: "true",
+			annotations: "true",
+			continue_straight: "true",
+		});
+
+		const response = await fetch(`${url}?${params}`, {
 			method: "GET",
 			headers: this.DEFAULT_HEADERS,
 			signal: AbortSignal.timeout(8000),
