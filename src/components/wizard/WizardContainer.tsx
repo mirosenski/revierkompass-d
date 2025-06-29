@@ -70,10 +70,19 @@ const WizardContainer: React.FC = () => {
         className="text-center mb-8"
       >
         <h1 className="text-2xl md:text-3xl font-bold mb-2">
-          <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+          <span
+            className="
+              bg-gradient-to-r from-blue-600 to-blue-800
+              bg-clip-text text-transparent
+              text-shadow-lg text-shadow-blue-500/30
+              dark:from-blue-400 dark:to-blue-600 dark:text-shadow-blue-400/20
+            "
+          >
             RevierKompass
-          </span>{' '}
-          <span className="text-gray-700 dark:text-gray-300">Routing</span>
+          </span>
+          <span className="text-gray-700 dark:text-gray-300 ml-2">
+            Routing
+          </span>
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Optimale Routen zu Polizeistationen in Baden-Württemberg

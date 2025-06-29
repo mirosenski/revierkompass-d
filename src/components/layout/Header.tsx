@@ -8,8 +8,8 @@ import Logo from '@/components/ui/Logo';
 interface HeaderProps {
   onAdminLogin: () => void;
   onBackToWizard: () => void;
-  onGoToAdmin?: () => void;
-  currentView: 'wizard' | 'login' | 'admin' | 'test';
+  onGoToAdmin: () => void;
+  currentView: 'wizard' | 'login' | 'admin' | 'test' | 'logo-test';
 }
 
 const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdmin, currentView }) => {
@@ -43,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({ onAdminLogin, onBackToWizard, onGoToAdm
               onBackToWizard();
             }}
           >
-            <Logo size="md" animated={true} />
+            <Logo size="sm" animated={true} />
           </motion.div>
 
           {/* Navigation & Controls */}
