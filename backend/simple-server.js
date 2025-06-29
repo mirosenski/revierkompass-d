@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const fetch = require('node-fetch');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -141,6 +142,56 @@ app.delete('/api/stationen', async (req, res) => {
   } catch (error) {
     console.error('Fehler beim Löschen aller Stationen:', error);
     res.status(500).json({ error: 'Stationen konnten nicht gelöscht werden' });
+  }
+});
+
+// ===== GEOCODING ROUTES =====
+
+// GET /api/maps/geocoding - Geocoding mit Fallback
+app.get('/api/maps/geocoding', async (req, res) => {
+  try {
+    const { q: query } = req.query;
+    
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ error: 'Query parameter "q" is required' });
+    }
+    
+    console.log(`🔍 Geocoding request: ${query}`);
+    
+    // Zuerst versuchen, lokalen Nominatim zu verwenden
+    try {
+      const localUrl = `http://localhost:7070/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=de`;
+      const localResponse = await fetch(localUrl, { timeout: 3000 });
+      
+      if (localResponse.ok) {
+        const data = await localResponse.json();
+        console.log('✅ Lokaler Nominatim erfolgreich');
+        return res.json(data);
+      }
+    } catch (localError) {
+      console.log('⚠️ Lokaler Nominatim nicht verfügbar, verwende Online-Fallback');
+    }
+    
+    // Fallback zu Online-Nominatim
+    const onlineUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=de`;
+    const onlineResponse = await fetch(onlineUrl, {
+      headers: {
+        'User-Agent': 'Revierkompass/1.0 (https://revierkompass.de)'
+      },
+      timeout: 5000
+    });
+    
+    if (onlineResponse.ok) {
+      const data = await onlineResponse.json();
+      console.log('✅ Online-Nominatim erfolgreich');
+      res.json(data);
+    } else {
+      throw new Error(`Online-Nominatim Fehler: ${onlineResponse.status}`);
+    }
+    
+  } catch (error) {
+    console.error('Geocoding error:', error);
+    res.status(500).json({ error: 'Geocoding fehlgeschlagen' });
   }
 });
 

@@ -7,6 +7,7 @@ export interface OfflineMapConfig {
   tileServerUrl: string;
   routingServerUrl: string;
   geocodingServerUrl: string;
+  onlineGeocodingUrl: string;
   dataPath: string;
   maxCacheSize?: number; // Optionale Cache-Konfiguration
   tileCacheStrategy?: 'memory' | 'indexeddb' | 'both'; // Erweiterte Cache-Strategien
@@ -76,18 +77,27 @@ export class OfflineMapService {
   private routeCache: Map<string, RouteResult> = new Map();
   private isInitialized = false;
 
-  constructor(config: OfflineMapConfig) {
-    this.config = config;
+  constructor() {
+    this.config = {
+      tileServerUrl: 'http://localhost:8080',
+      routingServerUrl: 'http://localhost:5000',
+      geocodingServerUrl: 'http://localhost:7070',
+      onlineGeocodingUrl: 'https://nominatim.openstreetmap.org',
+      dataPath: '/data'
+    };
+    
     this.capabilities = {
+      tiles: false,
       routing: false,
       geocoding: false,
-      tiles: false,
       search: false
     };
+    
     this.networkStatus = {
       online: navigator.onLine,
       lastCheck: Date.now()
     };
+    
     this.tileCache = new Map();
     this.searchIndex = new Map();
     this.baseUrl = '/api/maps';
@@ -333,7 +343,7 @@ export class OfflineMapService {
   }
 
   /**
-   * Geocodiert Adresse mit Offline Nominatim
+   * Geocodiert Adresse mit Offline Nominatim oder Online-Fallback
    */
   async geocodeAddress(query: string): Promise<Array<{
     lat: number;
@@ -346,18 +356,45 @@ export class OfflineMapService {
     
     // Zuerst Cache prüfen
     const cached = localStorage.getItem(cacheKey);
-    if (cached && this.isOfflineMode()) {
+    if (cached) {
       return JSON.parse(cached);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/geocode?q=${encodeURIComponent(query)}`);
-      const results = await response.json();
+      // Zuerst versuchen, Offline-Nominatim zu verwenden
+      if (this.capabilities.geocoding) {
+        console.log('🔍 Verwende Offline-Nominatim für:', query);
+        const response = await fetch(`${this.config.geocodingServerUrl}/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=de`);
+        
+        if (response.ok) {
+          const results = await response.json();
+          
+          // Ergebnisse zwischenspeichern
+          localStorage.setItem(cacheKey, JSON.stringify(results));
+          
+          return results;
+        }
+      }
       
-      // Ergebnisse zwischenspeichern
-      localStorage.setItem(cacheKey, JSON.stringify(results));
+      // Fallback zu Online-Nominatim
+      console.log('🌐 Verwende Online-Nominatim als Fallback für:', query);
+      const onlineResponse = await fetch(`${this.config.onlineGeocodingUrl}/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=de`, {
+        headers: {
+          'User-Agent': 'Revierkompass/1.0 (https://revierkompass.de)'
+        }
+      });
       
-      return results;
+      if (onlineResponse.ok) {
+        const results = await onlineResponse.json();
+        
+        // Ergebnisse zwischenspeichern
+        localStorage.setItem(cacheKey, JSON.stringify(results));
+        
+        return results;
+      }
+      
+      throw new Error('Geocoding fehlgeschlagen');
+      
     } catch (error) {
       console.error('Geocoding error:', error);
       
@@ -982,10 +1019,11 @@ export const defaultOfflineConfig: OfflineMapConfig = {
   tileServerUrl: 'http://localhost:8080',
   routingServerUrl: 'http://localhost:5000',
   geocodingServerUrl: 'http://localhost:7070',
+  onlineGeocodingUrl: 'https://nominatim.openstreetmap.org',
   dataPath: '/data',
   maxCacheSize: 2000, // Erhöhte Cache-Kapazität
   tileCacheStrategy: 'both' // Memory + IndexedDB
 };
 
 // Singleton-Instanz
-export const offlineMapService = new OfflineMapService(defaultOfflineConfig);
+export const offlineMapService = new OfflineMapService();

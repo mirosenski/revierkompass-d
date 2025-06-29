@@ -107,7 +107,8 @@ class RoutingService {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 3000);
       
-      const response = await fetch(`${this.OFFLINE_ROUTING_URL}/status`, {
+      // Verwende eine gültige Test-Routenabfrage statt /status
+      const response = await fetch(`${this.OFFLINE_ROUTING_URL}/route/v1/driving/9.18,48.78;9.19,48.79?overview=false`, {
         signal: controller.signal,
         headers: this.DEFAULT_HEADERS
       });

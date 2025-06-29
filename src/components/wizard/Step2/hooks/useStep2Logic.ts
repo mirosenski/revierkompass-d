@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStationStore } from '@/store/useStationStore';
 import { useWizardStore } from '@/store/useWizardStore';
 import { useAppStore, RouteResult } from '@/lib/store/app-store';
+import { routingService } from '@/lib/services/routing-service';
 import toast from 'react-hot-toast';
 import React from 'react';
 
@@ -149,7 +150,7 @@ export const useStep2Logic = () => {
     }
   }, [customAddresses, selectedCustomAddresses]);
 
-  // Fetch routes from OSRM with rate limiting and better error handling
+  // Fetch routes using routing service with proper fallback chain
   const fetchRoutes = async () => {
     setIsLoading(true);
     const startCoords = { lat: 48.7784, lng: 9.1806 };
@@ -215,144 +216,106 @@ export const useStep2Logic = () => {
       });
     }
 
-    console.log('🗺️ Starte Routenberechnung für', allDestinations.length, 'Ziele');
+    console.log('🗺️ Starte Routenberechnung für', allDestinations.length, 'Ziele mit routingService');
 
     try {
-      // Rate limiting: Verarbeite Routen in Batches von 3
-      const batchSize = 3;
+      // Verwende routingService für alle Routenberechnungen
       const newRoutes: RouteResult[] = [];
       
-      for (let i = 0; i < allDestinations.length; i += batchSize) {
-        const batch = allDestinations.slice(i, i + batchSize);
-        
-        const batchRoutes = await Promise.all(
-          batch.map(async dest => {
-            // Sicherstellen, dass die ID gültig ist
-            if (!dest.id || dest.id === 'undefined' || dest.id === 'null' || isNaN(Number(dest.id))) {
-              console.warn('Invalid destination ID:', dest.id, 'for destination:', dest.name);
-              return null;
-            }
-
-            const cacheKey = `${startCoords.lat}-${dest.coordinates.lat}-${dest.coordinates.lng}`;
-
-            if (routeCache[cacheKey]) {
-              return routeCache[cacheKey];
-            }
-
-            try {
-              // OSRM API mit Timeout und Retry-Logic
-              const controller = new AbortController();
-              const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s Timeout
-
-              const response = await fetch(
-                `https://router.project-osrm.org/route/v1/driving/${startCoords.lng},${startCoords.lat};${dest.coordinates.lng},${dest.coordinates.lat}?overview=full&geometries=geojson`,
-                {
-                  signal: controller.signal,
-                  headers: {
-                    'Accept': 'application/json',
-                    'User-Agent': 'Revierkompass/1.0'
-                  }
-                }
-              );
-
-              clearTimeout(timeoutId);
-
-              if (response.status === 429) {
-                // Rate limit erreicht - warte und verwende Fallback
-                console.warn(`Rate limit reached for ${dest.name}, using fallback`);
-                throw new Error('Rate limit reached');
-              }
-
-              if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-              }
-
-              const data = await response.json();
-
-              if (data.code !== 'Ok' || !data.routes?.[0]) {
-                throw new Error('No route found');
-              }
-
-              const osrmRoute = data.routes[0];
-              const newRoute: RouteResult = {
-                id: dest.id,
-                destinationId: dest.id,
-                destinationName: dest.name,
-                destinationType: 'station',
-                address: dest.address,
-                coordinates: dest.coordinates,
-                color: dest.type === 'praesidium' ? '#2563eb' : '#22c55e',
-                distance: osrmRoute.distance / 1000,
-                duration: Math.round(osrmRoute.duration / 60),
-                estimatedFuel: (osrmRoute.distance / 1000) * 0.07,
-                estimatedCost: (osrmRoute.distance / 1000) * 0.07 * 1.8,
-                routeType: 'Schnellste',
-                stationType: dest.type === 'praesidium' ? 'Präsidium' : 'Revier',
-                route: {
-                  coordinates: osrmRoute.geometry.coordinates,
-                  distance: osrmRoute.distance / 1000,
-                  duration: Math.round(osrmRoute.duration / 60)
-                },
-                provider: 'OSRM'
-              };
-
-              setRouteCache(prev => ({ ...prev, [cacheKey]: newRoute }));
-              return newRoute;
-            } catch (error) {
-              console.warn(`Error routing to ${dest.name}:`, error);
-              
-              // Berechne Luftlinien-Distanz als Fallback
-              const lat1 = startCoords.lat * Math.PI / 180;
-              const lat2 = dest.coordinates.lat * Math.PI / 180;
-              const deltaLat = (dest.coordinates.lat - startCoords.lat) * Math.PI / 180;
-              const deltaLng = (dest.coordinates.lng - startCoords.lng) * Math.PI / 180;
-              
-              const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                       Math.cos(lat1) * Math.cos(lat2) *
-                       Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
-              const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-              const distance = 6371 * c; // Erdradius in km
-              
-              return {
-                id: dest.id,
-                destinationId: dest.id,
-                destinationName: dest.name,
-                destinationType: 'station',
-                address: dest.address,
-                coordinates: dest.coordinates,
-                color: dest.type === 'praesidium' ? '#2563eb' : '#22c55e',
-                distance: distance,
-                duration: Math.round(distance * 2), // Geschätzte Fahrzeit (2 min/km)
-                estimatedFuel: distance * 0.07,
-                estimatedCost: distance * 0.07 * 1.8,
-                routeType: 'Schnellste',
-                stationType: dest.type === 'praesidium' ? 'Präsidium' : 'Revier',
-                route: {
-                  coordinates: [
-                    [startCoords.lng, startCoords.lat],
-                    [dest.coordinates.lng, dest.coordinates.lat]
-                  ],
-                  distance: distance,
-                  duration: Math.round(distance * 2)
-                },
-                provider: 'Direct'
-              } as RouteResult;
-            }
-          })
-        );
-
-        // Filtere null-Werte heraus
-        const validRoutes = batchRoutes.filter(route => route !== null) as RouteResult[];
-        newRoutes.push(...validRoutes);
-
-        // Warte zwischen Batches um Rate-Limiting zu vermeiden
-        if (i + batchSize < allDestinations.length) {
-          await new Promise(resolve => setTimeout(resolve, 1000)); // 1s Pause
+      // Parallele Verarbeitung für bessere Performance
+      const routePromises = allDestinations.map(async dest => {
+        // Sicherstellen, dass die ID gültig ist
+        if (!dest.id || dest.id === 'undefined' || dest.id === 'null' || isNaN(Number(dest.id))) {
+          console.warn('Invalid destination ID:', dest.id, 'for destination:', dest.name);
+          return null;
         }
-      }
 
-      setRoutes(newRoutes);
-      console.log('🗺️ Routen berechnet:', newRoutes.length, 'für', allDestinations.length, 'Ziele');
+        const cacheKey = `${startCoords.lat}-${dest.coordinates.lat}-${dest.coordinates.lng}`;
+
+        if (routeCache[cacheKey]) {
+          return routeCache[cacheKey];
+        }
+
+        try {
+          // Verwende routingService statt direkter OSRM-API-Aufruf
+          const routeResponse = await routingService.calculateSingleRoute(
+            startCoords,
+            dest.coordinates,
+            { profile: 'driving' }
+          );
+
+          const newRoute: RouteResult = {
+            id: dest.id,
+            destinationId: dest.id,
+            destinationName: dest.name,
+            destinationType: 'station',
+            address: dest.address,
+            coordinates: dest.coordinates,
+            color: dest.type === 'praesidium' ? '#2563eb' : '#22c55e',
+            distance: routeResponse.distance / 1000,
+            duration: Math.round(routeResponse.duration / 60),
+            estimatedFuel: (routeResponse.distance / 1000) * 0.07,
+            estimatedCost: (routeResponse.distance / 1000) * 0.07 * 1.8,
+            routeType: 'Schnellste',
+            stationType: dest.type === 'praesidium' ? 'Präsidium' : 'Revier',
+            route: {
+              coordinates: routeResponse.coordinates,
+              distance: routeResponse.distance / 1000,
+              duration: Math.round(routeResponse.duration / 60)
+            },
+            provider: routeResponse.provider as 'OSRM' | 'Valhalla' | 'GraphHopper' | 'Direct' | 'Offline-OSRM' || 'OSRM'
+          };
+
+          setRouteCache(prev => ({ ...prev, [cacheKey]: newRoute }));
+          return newRoute;
+        } catch (error) {
+          console.warn(`Error routing to ${dest.name}:`, error);
+          
+          // Berechne Luftlinien-Distanz als Fallback
+          const lat1 = startCoords.lat * Math.PI / 180;
+          const lat2 = dest.coordinates.lat * Math.PI / 180;
+          const deltaLat = (dest.coordinates.lat - startCoords.lat) * Math.PI / 180;
+          const deltaLng = (dest.coordinates.lng - startCoords.lng) * Math.PI / 180;
+          
+          const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                   Math.cos(lat1) * Math.cos(lat2) *
+                   Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const distance = 6371 * c; // Erdradius in km
+          
+          return {
+            id: dest.id,
+            destinationId: dest.id,
+            destinationName: dest.name,
+            destinationType: 'station',
+            address: dest.address,
+            coordinates: dest.coordinates,
+            color: dest.type === 'praesidium' ? '#2563eb' : '#22c55e',
+            distance: distance,
+            duration: Math.round(distance * 2), // Geschätzte Fahrzeit (2 min/km)
+            estimatedFuel: distance * 0.07,
+            estimatedCost: distance * 0.07 * 1.8,
+            routeType: 'Schnellste',
+            stationType: dest.type === 'praesidium' ? 'Präsidium' : 'Revier',
+            route: {
+              coordinates: [
+                [startCoords.lng, startCoords.lat],
+                [dest.coordinates.lng, dest.coordinates.lat]
+              ],
+              distance: distance,
+              duration: Math.round(distance * 2)
+            },
+            provider: 'Direct'
+          } as RouteResult;
+        }
+      });
+
+      // Warte auf alle Routenberechnungen
+      const routeResults = await Promise.all(routePromises);
+      const validRoutes = routeResults.filter(route => route !== null) as RouteResult[];
+      
+      setRoutes(validRoutes);
+      console.log('🗺️ Routen berechnet:', validRoutes.length, 'für', allDestinations.length, 'Ziele');
     } finally {
       setIsLoading(false);
     }
@@ -361,7 +324,10 @@ export const useStep2Logic = () => {
   // Fetch routes once stations are loaded or selection changes
   useEffect(() => {
     if (stations.length > 0) {
-      fetchRoutes();
+      // Starte Routenberechnung parallel und nicht-blockierend
+      fetchRoutes().catch(error => {
+        console.error('Fehler bei der Routenberechnung:', error);
+      });
     }
   }, [stations, selectedStations, activeView]);
 

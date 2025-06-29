@@ -20,12 +20,30 @@ app.use('/api/maps/route', createProxyMiddleware({
   }
 }));
 
-// Proxy für Nominatim
+// Proxy für Nominatim mit Fallback
 app.use('/api/maps/geocoding', createProxyMiddleware({
   target: 'http://localhost:7070',
   changeOrigin: true,
   pathRewrite: {
     '^/api/maps/geocoding': ''
+  },
+  onError: (err, req, res) => {
+    console.log('Nominatim Proxy Fehler, verwende Online-Fallback:', err.message);
+    // Fallback zu Online-Nominatim
+    const onlineUrl = `https://nominatim.openstreetmap.org${req.url}`;
+    fetch(onlineUrl, {
+      headers: {
+        'User-Agent': 'Revierkompass/1.0 (https://revierkompass.de)'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      res.json(data);
+    })
+    .catch(error => {
+      console.error('Online-Nominatim auch fehlgeschlagen:', error);
+      res.status(500).json({ error: 'Geocoding service unavailable' });
+    });
   }
 }));
 
@@ -256,16 +274,46 @@ app.post('/api/maps/route', async (req, res) => {
   }
 });
 
-// Geocoding
+// Geocoding mit Fallback
 app.get('/api/maps/geocoding', async (req, res) => {
   try {
     const { q } = req.query;
     
-    const nominatimUrl = `http://localhost:7070/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=de`;
-    const response = await fetch(nominatimUrl);
-    const data = await response.json();
+    if (!q) {
+      return res.status(400).json({ error: 'Query parameter "q" is required' });
+    }
     
-    res.json(data);
+    // Zuerst versuchen, lokalen Nominatim zu verwenden
+    try {
+      const localUrl = `http://localhost:7070/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=de`;
+      const localResponse = await fetch(localUrl, { timeout: 3000 });
+      
+      if (localResponse.ok) {
+        const data = await localResponse.json();
+        console.log('✅ Lokaler Nominatim erfolgreich');
+        return res.json(data);
+      }
+    } catch (localError) {
+      console.log('⚠️ Lokaler Nominatim nicht verfügbar, verwende Online-Fallback');
+    }
+    
+    // Fallback zu Online-Nominatim
+    const onlineUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=de`;
+    const onlineResponse = await fetch(onlineUrl, {
+      headers: {
+        'User-Agent': 'Revierkompass/1.0 (https://revierkompass.de)'
+      },
+      timeout: 5000
+    });
+    
+    if (onlineResponse.ok) {
+      const data = await onlineResponse.json();
+      console.log('✅ Online-Nominatim erfolgreich');
+      res.json(data);
+    } else {
+      throw new Error(`Online-Nominatim Fehler: ${onlineResponse.status}`);
+    }
+    
   } catch (error) {
     console.error('Geocoding error:', error);
     res.status(500).json({ error: 'Geocoding fehlgeschlagen' });
